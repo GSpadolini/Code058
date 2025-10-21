@@ -1,5 +1,7 @@
 package com.code058.model;
 
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,19 @@ public class GestorDeDatos {
         // Opcional: Cargar datos de prueba para empezar a probar la aplicación
         cargarDatosIniciales();
     }
+
+    public void anadirArticulo(Articulo articulo) {
+        if (this.articulos.containsKey(articulo.getCodigo())) {
+            System.err.println("Error de negocio: El artículo con código " + articulo.getCodigo() + " ya existe.");
+            return;
+        }
+        this.articulos.put(articulo.getCodigo(), articulo);
+    }
+
+    public void mostrarArticulos(){
+        System.out.println(articulos);
+    }
+
 
     // Aquí irán los métodos de lógica de negocio (ej: anadirCliente(), crearPedido(), etc.)
 

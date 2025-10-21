@@ -1,5 +1,6 @@
 package com.code058.controller;
 
+import com.code058.model.Articulo;
 import com.code058.model.GestorDeDatos;
 import com.code058.view.VistaConsola;
 
@@ -16,8 +17,78 @@ public class Controlador {
 
     // El método de arranque que pide la App.java
     public void iniciar() {
-        // Por ahora, solo un mensaje de prueba
-        System.out.println("Sistema iniciado. ¡Bienvenido/a!");
-        // Aquí irá el bucle do-while del menú (lo veremos en Módulo 2)
+
+            int opcion;
+            do {
+                vista.mostrarMenuPrincipal();
+                // 1. Pide a la VISTA que muestre el menú y devuelva la opción
+                opcion = vista.pedirOpcion();
+
+                // 2. Ejecuta la lógica según la opción
+                switch (opcion) {
+                    case 1:
+                        vista.mostrarMenuArticulos();
+                        gestionarArticulos();
+                        break;
+                    case 2:
+                        // gestionarClientes(); // Por hacer
+                        break;
+                    case 3:
+                        // gestionarPedidos(); // Por hacer
+                        break;
+                    case 0:
+                        vista.mostrarMensaje("Saliendo de la aplicación. ¡Hasta pronto!");
+                        break;
+                    default:
+                        // Si la opción devuelta por la Vista no es válida, no hacemos nada, se repite el bucle.
+                        break;
+                }
+            } while (opcion != 0);
+    }
+
+    private void anadirArticulo() {
+
+        vista.mostrarMensaje("--- Añadir Nuevo Artículo ---");
+        vista.mostrarMensaje("Introduce el codigo alfanumerico");
+        String codigo = vista.pedirString();
+        vista.mostrarMensaje("Introduce la descripcion");
+        String descripcion = vista.pedirString();
+        vista.mostrarMensaje("Introduce el precio");
+        double precio = vista.pedirDouble();
+        vista.mostrarMensaje("Introduce el gasto de envio");
+        double gastoEnvio = vista.pedirDouble();
+        vista.mostrarMensaje("Introduce el timepo de preparacion");
+        int tiempoPreparacion = vista.pedirInt();
+
+        Articulo nuevoArticulo = new Articulo(codigo, descripcion,precio,gastoEnvio,tiempoPreparacion);
+
+        modelo.anadirArticulo(nuevoArticulo);
+
+        vista.mostrarMensaje("Artículo " + codigo + " añadido con éxito.");
+    }
+
+    private void gestionarArticulos() {
+        int opcion;
+        do {
+            // 1. Pide a la VISTA que MUESTRE el submenú y DEVUELVA la opción del submenú
+            opcion = vista.pedirInt();
+
+            switch (opcion) {
+                case 1:
+                    anadirArticulo();
+                    modelo.mostrarArticulos();
+                    break;
+                case 2:
+                    // mostrarArticulos(); // Por hacer
+                    break;
+                case 0:
+                    // Sale del bucle do-while y vuelve a 'iniciar()'
+                    vista.mostrarMensaje("Volviendo al Menú Principal...");
+                    break;
+                default:
+                    vista.mostrarError("Opción no válida.");
+                    break;
+            }
+        } while (opcion != 0);
     }
 }
