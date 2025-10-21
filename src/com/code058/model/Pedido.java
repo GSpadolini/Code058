@@ -1,6 +1,7 @@
 package com.code058.model;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class Pedido {
     private Cliente cliente;
@@ -8,19 +9,19 @@ public class Pedido {
 
     private int numeroPedido;
     private int cantidad;
-    private LocalDateTime fechaHora;
+    private LocalDateTime fechaPedido;
     private double gastoEnvio;
     private int tiempoPreparacion;
 
 
     public Pedido(){};
 
-    public Pedido(Cliente cliente, Articulo articulo, int numeroPedido, int cantidad, LocalDateTime fechaHora, double gastoEnvio, int tiempoPreparacion) {
+    public Pedido(Cliente cliente, Articulo articulo, int numeroPedido, int cantidad, LocalDateTime fechaPedido, double gastoEnvio, int tiempoPreparacion) {
         this.cliente=cliente;
         this.articulo = articulo;
         this.numeroPedido = numeroPedido;
         this.cantidad = cantidad;
-        this.fechaHora = fechaHora;
+        this.fechaPedido = fechaPedido;
         this.gastoEnvio = gastoEnvio;
         this.tiempoPreparacion = tiempoPreparacion;
     }
@@ -57,12 +58,12 @@ public class Pedido {
         this.cantidad = cantidad;
     }
 
-    public LocalDateTime getFechaHora() {
-        return fechaHora;
+    public LocalDateTime getFechaPedido() {
+        return fechaPedido;
     }
 
-    public void setFechaHora(LocalDateTime fechaHora) {
-        this.fechaHora = fechaHora;
+    public void setFechaPedido(LocalDateTime fechaPedido) {
+        this.fechaPedido = fechaPedido;
     }
 
     public double getGastoEnvio() {
@@ -86,9 +87,25 @@ public class Pedido {
         return "Pedido{" +
                 "numeroPedido=" + numeroPedido +
                 ", cantidad=" + cantidad +
-                ", fechaHora=" + fechaHora +
+                ", fechaHora=" + fechaPedido +
                 ", gastoEnvio=" + gastoEnvio +
                 ", tiempoPreparacion=" + tiempoPreparacion +
                 '}';
+    }
+
+    public double getPrecioTotal(){
+        double total;
+        total = (articulo.getPrecioVenta()*cantidad) + (articulo.getGastoEnvio()*(1-cliente.descuentoEnvio()));
+        return total;
+    }
+
+    public boolean esCancelable(){
+        boolean cancelado = false;
+        LocalDateTime ahora = LocalDateTime.now();
+        long minutosTranscurridos = ChronoUnit.MINUTES.between(fechaPedido, ahora);
+        if ((minutosTranscurridos) < tiempoPreparacion){
+            cancelado = true;
+        }
+        return cancelado;
     }
 }
