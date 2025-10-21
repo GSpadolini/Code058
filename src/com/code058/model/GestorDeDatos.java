@@ -32,9 +32,7 @@ public class GestorDeDatos {
         this.articulos.put(articulo.getCodigo(), articulo);
     }
 
-    public void mostrarArticulos(){
-        System.out.println(articulos);
-    }
+
 
 
     // Aquí irán los métodos de lógica de negocio (ej: anadirCliente(), crearPedido(), etc.)

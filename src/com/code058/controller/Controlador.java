@@ -76,7 +76,6 @@ public class Controlador {
             switch (opcion) {
                 case 1:
                     anadirArticulo();
-                    modelo.mostrarArticulos();
                     break;
                 case 2:
                     // mostrarArticulos(); // Por hacer
