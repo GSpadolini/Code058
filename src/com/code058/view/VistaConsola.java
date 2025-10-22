@@ -1,5 +1,7 @@
 package com.code058.view;
 
+import com.code058.model.Articulo;
+import java.util.Map;
 import java.util.Scanner;
 
 public class VistaConsola {
@@ -26,9 +28,10 @@ public class VistaConsola {
 
         try {
             opcion = scanner.nextInt();
+            scanner.nextLine();
         } catch (java.util.InputMismatchException e) {
 
-            scanner.next();
+            scanner.nextLine();
             mostrarError("Entrada no válida. Por favor, introduce un número.");
             opcion = -1;
         }
@@ -45,26 +48,64 @@ public class VistaConsola {
 
     public String pedirString(){
         String palabra;
-        palabra = scanner.next();
+        palabra = scanner.nextLine();
         return palabra;
     }
 
     public double pedirDouble(){
-        double numeroDecimal;
-        numeroDecimal = scanner.nextDouble();
+        double numeroDecimal = 0.0;
+        boolean valido = false;
+
+        do {
+            String numeroString = scanner.nextLine();
+
+            try {
+                numeroDecimal = Double.parseDouble(numeroString);
+                valido = true;
+            } catch (NumberFormatException e) {
+                mostrarError("Formato incorrecto. Por favor, introduce un número decimal");
+            }
+        } while (!valido);
+
         return numeroDecimal;
     }
 
     public int pedirInt(){
-        int numeroNoDecimal;
-        numeroNoDecimal = scanner.nextInt();
+        int numeroNoDecimal = 0;
+        boolean valido = false;
+        do {
+            String numeroString = scanner.nextLine();
+            try {
+                numeroNoDecimal = Integer.parseInt(numeroString);
+                valido = true;
+            } catch (NumberFormatException e) {
+                mostrarError("Formato incorrecto. Por favor, introduce un número entero");
+            }
+        } while (!valido);
         return numeroNoDecimal;
     }
 
     public void mostrarMenuArticulos(){
+        System.out.println("Menu Gestion de Articulo");
         System.out.println("Elige una opcion");
-        System.out.printf("1. Añadir Articulo");
-        System.out.printf("\n2. Mostrat Articulo");
+        System.out.println("1. Añadir Articulo");
+        System.out.println("2. Mostrat Articulo");
+        System.out.println("0. Ir al menu principal");
+    }
+    public void imprimirListaArticulos(Map<String, Articulo> articulos) {
+        articulos.forEach((codigo, articulo) ->
+                System.out.println("Codigo del Articulo: " + codigo + ", " + articulo)
+        );
+    }
+
+    public void mostrarMenuCliente(){
+        System.out.println("Menu Gestion de Cliente");
+        System.out.println("Elige una opcion");
+        System.out.println("1. Añadir Cliente");
+        System.out.println("2. Mostrar Cliente Estandar");
+        System.out.println("3. Mostrar Cliente Estandar");
+        System.out.println("4. Mostrar Cliente Primium");
+        System.out.println("0. Ir al menu principal");
     }
 
 }

@@ -4,6 +4,8 @@ import com.code058.model.Articulo;
 import com.code058.model.GestorDeDatos;
 import com.code058.view.VistaConsola;
 
+import java.util.Map;
+
 public class Controlador {
     // El Controlador tiene referencias a ambas capas
     private GestorDeDatos modelo;
@@ -27,11 +29,10 @@ public class Controlador {
                 // 2. Ejecuta la lógica según la opción
                 switch (opcion) {
                     case 1:
-                        vista.mostrarMenuArticulos();
                         gestionarArticulos();
                         break;
                     case 2:
-                        // gestionarClientes(); // Por hacer
+                        gestionarClientes(); // Por hacer
                         break;
                     case 3:
                         // gestionarPedidos(); // Por hacer
@@ -67,22 +68,27 @@ public class Controlador {
         vista.mostrarMensaje("Artículo " + codigo + " añadido con éxito.");
     }
 
+    private void mostrarArticulos(){
+        Map<String, Articulo> articulos = modelo.getArticulos();
+        vista.imprimirListaArticulos(articulos);
+    }
+
     private void gestionarArticulos() {
+
         int opcion;
         do {
-            // 1. Pide a la VISTA que MUESTRE el submenú y DEVUELVA la opción del submenú
-            opcion = vista.pedirInt();
+            vista.mostrarMenuArticulos();
+            opcion = vista.pedirOpcion();
 
             switch (opcion) {
                 case 1:
                     anadirArticulo();
                     break;
                 case 2:
-                    // mostrarArticulos(); // Por hacer
+                    mostrarArticulos();
                     break;
                 case 0:
-                    // Sale del bucle do-while y vuelve a 'iniciar()'
-                    vista.mostrarMensaje("Volviendo al Menú Principal...");
+                    vista.mostrarMensaje("Volviendo al Menú Principal");
                     break;
                 default:
                     vista.mostrarError("Opción no válida.");
@@ -90,4 +96,39 @@ public class Controlador {
             }
         } while (opcion != 0);
     }
+
+    private void gestionarClientes() {
+
+        int opcion;
+        do {
+            vista.mostrarMenuCliente();
+            opcion = vista.pedirOpcion();
+            switch (opcion) {
+                case 1:
+                    // anadirCliente(); // Por hacer
+                    break;
+                case 2:
+                    // mostrarClientes(); // Por hacer
+                    break;
+
+                case 3:
+                    // mostrarClientesEstandar(); // Por hacer
+                    break;
+
+                case 4:
+                    // mostrarClientesPremium(); // Por hacer
+                    break;
+                case 0:
+                    vista.mostrarMensaje("Volviendo al Menú Principal");
+                    break;
+                default:
+                    vista.mostrarError("Opción no válida.");
+                    break;
+            }
+        } while (opcion != 0);
+    }
+    
+
 }
+
+

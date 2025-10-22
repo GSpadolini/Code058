@@ -32,8 +32,9 @@ public class GestorDeDatos {
         this.articulos.put(articulo.getCodigo(), articulo);
     }
 
-
-
+    public Map<String, Articulo> getArticulos() {
+        return this.articulos;
+    }
 
     // Aquí irán los métodos de lógica de negocio (ej: anadirCliente(), crearPedido(), etc.)
 
