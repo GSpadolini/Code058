@@ -40,7 +40,7 @@ public class GestorDeDatos {
     // Aquí irán los métodos de lógica de negocio (ej: anadirCliente(), crearPedido(), etc.)
 
     //Gestión cliente
-    public void anadirCleinte(Cliente cliente) throws DuplicadosException{
+    public void anadirCliente(Cliente cliente) throws DuplicadosException{
         if(this.clientes.containsKey((cliente.getEmail()))){
             throw new DuplicadosException(("El cliente con el email " + cliente.getEmail()) + " ya existe");
         }
@@ -49,6 +49,13 @@ public class GestorDeDatos {
 
     public Map<String, Cliente> getClientes(){ return  this.clientes; }
 
+    public List<Cliente> getClientesEstandar(){
+        List<Cliente> lista = new ArrayList<>();
+        for(Cliente c : clientes.values()){
+            if( c instanceof ClienteEstandar) lista.add(c);
+        }
+        return lista;
+    }
     public List<Cliente> getClientesPremium(){
         List<Cliente> lista = new ArrayList<>();
         for(Cliente c : clientes.values()){

@@ -1,6 +1,9 @@
 package com.code058.view;
 
 import com.code058.model.Articulo;
+import com.code058.model.Cliente;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -96,6 +99,19 @@ public class VistaConsola {
         articulos.forEach((codigo, articulo) ->
                 System.out.println("Codigo del Articulo: " + codigo + ", " + articulo)
         );
+    }
+
+    public void imprimirListaClientes(Map<String, Cliente> clientes){
+        clientes.forEach((email,cliente) ->
+                System.out.println("Email " + email + ", " + cliente));
+    }
+
+    public void imprimirListaClientesFiltrados(List<Cliente> lista){
+        if(lista.isEmpty()){
+            System.out.println("No hay clientes en esta categoría");
+        }else{
+            lista.forEach(c -> System.out.println(c.toString()));
+        }
     }
 
     public void mostrarMenuCliente(){
