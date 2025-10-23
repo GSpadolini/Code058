@@ -63,9 +63,13 @@ public class Controlador {
 
         Articulo nuevoArticulo = new Articulo(codigo, descripcion,precio,gastoEnvio,tiempoPreparacion);
 
-        modelo.anadirArticulo(nuevoArticulo);
+        try{
+            modelo.anadirArticulo(nuevoArticulo);
+            vista.mostrarMensaje("Artículo " + codigo + " añadido con éxito.");
+        }catch (com.code058.exceptions.DuplicadosException e){
+            vista.mostrarError(e.getMessage());
+        }
 
-        vista.mostrarMensaje("Artículo " + codigo + " añadido con éxito.");
     }
 
     private void mostrarArticulos(){
