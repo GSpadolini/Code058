@@ -1,7 +1,7 @@
 package com.code058.controller;
 
-import com.code058.model.Articulo;
-import com.code058.model.GestorDeDatos;
+import com.code058.exceptions.DuplicadosException;
+import com.code058.model.*;
 import com.code058.view.VistaConsola;
 
 import java.util.Map;
@@ -47,6 +47,7 @@ public class Controlador {
             } while (opcion != 0);
     }
 
+    // Artículos
     private void anadirArticulo() {
 
         vista.mostrarMensaje("--- Añadir Nuevo Artículo ---");
@@ -63,9 +64,13 @@ public class Controlador {
 
         Articulo nuevoArticulo = new Articulo(codigo, descripcion,precio,gastoEnvio,tiempoPreparacion);
 
-        modelo.anadirArticulo(nuevoArticulo);
+        try{
+            modelo.anadirArticulo(nuevoArticulo);
+            vista.mostrarMensaje("Artículo " + codigo + " añadido con éxito.");
+        }catch (com.code058.exceptions.DuplicadosException e){
+            vista.mostrarError(e.getMessage());
+        }
 
-        vista.mostrarMensaje("Artículo " + codigo + " añadido con éxito.");
     }
 
     private void mostrarArticulos(){
@@ -97,6 +102,7 @@ public class Controlador {
         } while (opcion != 0);
     }
 
+    //Pedidos
     private void gestionarClientes() {
 
         int opcion;
@@ -127,8 +133,44 @@ public class Controlador {
             }
         } while (opcion != 0);
     }
-    
 
+    //Clientes
+    private void anadirCliente()throws DuplicadosException{
+        vista.mostrarMensaje("Nombre: ");
+        String nombre = vista.pedirString();
+        vista.mostrarMensaje("Domicilio: ");
+        String domicilio = vista.pedirString();
+        vista.mostrarMensaje("NIF: ");
+        String nif = vista.pedirString();
+        vista.mostrarMensaje("Emal:");
+        String email = vista.pedirString();
+        vista.mostrarMensaje("¿Tipo de cliente? (1 = Estandar, 2  Premium)");
+        int tipo = vista.pedirInt();
+
+        Cliente nuevo;
+
+        if(tipo ==2){
+            nuevo = new ClientePremium(nombre, domicilio, nif, email);
+        }else{
+            nuevo = new ClienteEstandar(nombre, domicilio, nif, email);
+        }
+
+        modelo.anadirCliente(nuevo);
+        vista.mostrarMensaje("Cliente añadido correctamente");
+    }
+
+    private void mostrarClientes(){
+        Map<String, Cliente> clientes = modelo.getClientes();
+        vista.imprimirListaClientes(clientes);
+    }
+
+    private void mostrarClientesEstandar(){
+        vista.imprimirListaClientesFiltrados(modelo.getClientesEstandar());
+    }
+
+    private void mostrarClientesPremium(){
+        vista.imprimirListaClientesFiltrados(modelo.getClientesPremium());
+    }
 }
 
 
