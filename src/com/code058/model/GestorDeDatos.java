@@ -74,7 +74,7 @@ public class GestorDeDatos {
 
             if( p.getNumeroPedido() == numPedido){
                 if(!p.esCancelable()){
-                    throw new PedidoNoCancelableException("El pedido " + numPedido + "no puede cancelarse (ya se ha enviado)");
+                    throw new PedidoNoCancelableException("El pedido " + numPedido + " no puede cancelarse (ya se ha enviado)");
                 }
 
                 pedidos.remove(i);

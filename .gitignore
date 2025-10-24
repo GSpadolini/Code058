@@ -37,3 +37,6 @@ _MACOSX/
 # Directorios de compilación/salida
 out/
 build/
+
+# Maven
+target/
