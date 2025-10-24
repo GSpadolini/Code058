@@ -49,7 +49,7 @@ public abstract class Cliente {
 
     @Override
     public String toString() {
-        return "Cliente{" +
+        return "ClienteEstandar{" +
                 "nombre='" + nombre + '\'' +
                 ", domicilio='" + domicilio + '\'' +
                 ", nif='" + nif + '\'' +
