@@ -118,7 +118,7 @@ public class VistaConsola {
         System.out.println("Menu Gestion de Cliente");
         System.out.println("Elige una opcion");
         System.out.println("1. Añadir Cliente");
-        System.out.println("2. Mostrar Cliente Estandar");
+        System.out.println("2. Mostrar Clientes");
         System.out.println("3. Mostrar Cliente Estandar");
         System.out.println("4. Mostrar Cliente Primium");
         System.out.println("0. Ir al menu principal");

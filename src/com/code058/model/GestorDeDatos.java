@@ -37,7 +37,6 @@ public class GestorDeDatos {
         return this.articulos;
     }
 
-    // Aquí irán los métodos de lógica de negocio (ej: anadirCliente(), crearPedido(), etc.)
 
     //Gestión cliente
     public void anadirCliente(Cliente cliente) throws DuplicadosException{

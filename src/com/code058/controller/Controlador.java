@@ -18,7 +18,7 @@ public class Controlador {
     }
 
     // El método de arranque que pide la App.java
-    public void iniciar() {
+    public void iniciar() throws DuplicadosException {
 
             int opcion;
             do {
@@ -103,7 +103,7 @@ public class Controlador {
     }
 
     //Pedidos
-    private void gestionarClientes() {
+    private void gestionarClientes(){
 
         int opcion;
         do {
@@ -111,18 +111,18 @@ public class Controlador {
             opcion = vista.pedirOpcion();
             switch (opcion) {
                 case 1:
-                    // anadirCliente(); // Por hacer
+                    anadirCliente();
                     break;
                 case 2:
-                    // mostrarClientes(); // Por hacer
+                    mostrarClientes();
                     break;
 
                 case 3:
-                    // mostrarClientesEstandar(); // Por hacer
+                    mostrarClientesEstandar();
                     break;
 
                 case 4:
-                    // mostrarClientesPremium(); // Por hacer
+                    mostrarClientesPremium();
                     break;
                 case 0:
                     vista.mostrarMensaje("Volviendo al Menú Principal");
@@ -135,28 +135,40 @@ public class Controlador {
     }
 
     //Clientes
-    private void anadirCliente()throws DuplicadosException{
+    private void anadirCliente(){
         vista.mostrarMensaje("Nombre: ");
         String nombre = vista.pedirString();
         vista.mostrarMensaje("Domicilio: ");
         String domicilio = vista.pedirString();
         vista.mostrarMensaje("NIF: ");
         String nif = vista.pedirString();
-        vista.mostrarMensaje("Emal:");
+        vista.mostrarMensaje("Email:");
         String email = vista.pedirString();
-        vista.mostrarMensaje("¿Tipo de cliente? (1 = Estandar, 2  Premium)");
+        vista.mostrarMensaje("¿Tipo de cliente? (1 = Estandar, 2 = Premium)");
         int tipo = vista.pedirInt();
 
-        Cliente nuevo;
+        Cliente nuevo = null;
 
-        if(tipo ==2){
-            nuevo = new ClientePremium(nombre, domicilio, nif, email);
-        }else{
-            nuevo = new ClienteEstandar(nombre, domicilio, nif, email);
+        do {
+            if (tipo != 1 && tipo != 2) {
+                vista.mostrarMensaje("Tipo no válido. Introduzca 1 para Estandar o 2 para Premium:");
+                tipo = vista.pedirInt();
+            }
+            if(tipo == 2){
+                nuevo = new ClientePremium(nombre, domicilio, nif, email);
+            }
+            if (tipo == 1){
+                nuevo = new ClienteEstandar(nombre, domicilio, nif, email);
+            }
+        } while (tipo != 1 && tipo != 2);
+
+
+        try{
+            modelo.anadirCliente(nuevo);
+            vista.mostrarMensaje("Cliente " + email + " añadido con éxito.");
+        }catch (com.code058.exceptions.DuplicadosException e){
+            vista.mostrarError(e.getMessage()); // La maneja y usa la VISTA para el error
         }
-
-        modelo.anadirCliente(nuevo);
-        vista.mostrarMensaje("Cliente añadido correctamente");
     }
 
     private void mostrarClientes(){
@@ -171,6 +183,8 @@ public class Controlador {
     private void mostrarClientesPremium(){
         vista.imprimirListaClientesFiltrados(modelo.getClientesPremium());
     }
+
+
 }
 
 
