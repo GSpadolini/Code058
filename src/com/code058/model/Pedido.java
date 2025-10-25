@@ -85,6 +85,8 @@ public class Pedido {
     @Override
     public String toString() {
         return "Pedido{" +
+                cliente +
+                articulo + "\n" +
                 "numeroPedido=" + numeroPedido +
                 ", cantidad=" + cantidad +
                 ", fechaHora=" + fechaPedido +
@@ -98,6 +100,7 @@ public class Pedido {
         total = (articulo.getPrecioVenta()*cantidad) + (articulo.getGastoEnvio()*(1-cliente.descuentoEnvio()));
         return total;
     }
+
 
     public boolean esCancelable(){
         boolean cancelado = false;

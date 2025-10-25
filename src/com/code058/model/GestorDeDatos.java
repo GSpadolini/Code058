@@ -63,12 +63,22 @@ public class GestorDeDatos {
         return lista;
     }
 
+
     //Gestión pedidos
     public void crearPedido(Pedido pedido){
+        pedido.setNumeroPedido(generarNumeroPedido());
         this.pedidos.add(pedido);
     }
 
-    public void eliminarPedido(int numPedido) throws PedidoNoCancelableException{
+    private int generarNumeroPedido(){
+        if (pedidos.isEmpty()){
+            return 1;
+        }
+        Pedido ultimoPedido = pedidos.get(pedidos.size() - 1);
+        return ultimoPedido.getNumeroPedido() + 1;
+    }
+
+    public String eliminarPedido(int numPedido) throws PedidoNoCancelableException{
         for(int i = 0; i < pedidos.size(); i++){
             Pedido p = pedidos.get(i);
 
@@ -78,11 +88,10 @@ public class GestorDeDatos {
                 }
 
                 pedidos.remove(i);
-                System.out.println("Pedido eliminado correctamente");
-                return;
+                return "PEDIDO_ELIMINADO";
             }
         }
-        System.out.println("Pedido no encontrado");
+        return "PEDIDO_NO_ENCONTRADO";
     }
 
     public List<Pedido> getPedidos() {
@@ -113,15 +122,25 @@ public class GestorDeDatos {
         return resultado;
     }
 
+
     //Datos prueba
     private void cargarDatosIniciales() {
         // Ejemplo de carga para pruebas:
-        ClientePremium cp = new ClientePremium("G. Spadolini", "Calle padilla 123", "X1234567Z", "giancarlo@uoc.edu");
+        ClientePremium cp = new ClientePremium("asd", "Calle padilla 123", "X1234567Z", "asd@asd.com");
         // Usamos el email como clave para el HashMap
         this.clientes.put(cp.getEmail(), cp);
+        ClienteEstandar cp1 = new ClienteEstandar("qwe", "Calle padilla 123", "X1324567Z", "qwe@qwe.com");
+        // Usamos el email como clave para el HashMap
+        this.clientes.put(cp.getEmail(), cp1);
 
-        Articulo a1 = new Articulo("REF001", "Laptop de 15 pulg.", 800.0, 10.0, 60);
+        Articulo a1 = new Articulo("asd1", "Laptop de 15 pulg.", 800.0, 10.0, 1);
         this.articulos.put(a1.getCodigo(), a1);
+
+        Articulo a2 = new Articulo("asd2", "Laptop de 15 pulg.", 800.0, 10.0, 5);
+        this.articulos.put(a2.getCodigo(), a2);
+
+        Pedido p1 = new Pedido(cp, a1, 1, 1, null, 15.0, 1);
+        this.pedidos.add(p1);
     }
 
 }

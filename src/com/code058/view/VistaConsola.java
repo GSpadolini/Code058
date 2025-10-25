@@ -124,4 +124,16 @@ public class VistaConsola {
         System.out.println("0. Ir al menu principal");
     }
 
+    public void mostrarMenuPedidos(){
+        System.out.println("Menu Gestion de Pedidos");
+        System.out.println("Elige una opcion");
+        System.out.println("1. Crear Pedido");
+        System.out.println("2. Eliminar Pedido");
+        System.out.println("3. Mostrar Todos los Pedidos Pendientes");
+        System.out.println("4. Mostrar los Pedidos Pendientes filtrados por Cliente");
+        System.out.println("5. Mostrar Pedidos Completados");
+        System.out.println("6. Mostrar Pedidos Completados filtrados por Cliente");
+        System.out.println("0. Ir al menu principal");
+    }
+
 }
