@@ -18,7 +18,7 @@ public class GestorDeDatosTest {
         assertTrue(gestor.getArticulos().containsKey("A1"));
     }
 
-    @Test
+    @Test(expected = DuplicadosException.class)
     public void testAanadirArticuloDuplicadoExcepcion() throws DuplicadosException {
         GestorDeDatos gestor = new GestorDeDatos();
         Articulo articulo = new Articulo("A1", "Producto test", 10.0, 2.0, 5);

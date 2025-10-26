@@ -164,11 +164,11 @@ public class GestorDeDatos {
         Articulo a2 = new Articulo("asd2", "Laptop de 15 pulg.", 800.0, 10.0, 5);
         this.articulos.put(a2.getCodigo(), a2);
 
-        Pedido p1 = new Pedido(cp, a1, 1, 1, LocalDateTime.of(2025,10,26,13,23,0), 15.0, 5);
-        this.pedidos.add(p1);
-
-        Pedido p2 = new Pedido(cp1, a1 , 2, 3,LocalDateTime.now(), 20, 60);
-        this.pedidos.add(p2);
+//        Pedido p1 = new Pedido(cp, a1, 1, 1, LocalDateTime.of(2025,10,26,13,23,0), 15.0, 5);
+//        this.pedidos.add(p1);
+//
+//        Pedido p2 = new Pedido(cp1, a1 , 2, 3,LocalDateTime.now(), 20, 60);
+//        this.pedidos.add(p2);
     }
 
 }
