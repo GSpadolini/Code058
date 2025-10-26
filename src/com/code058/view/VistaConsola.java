@@ -2,6 +2,7 @@ package com.code058.view;
 
 import com.code058.model.Articulo;
 import com.code058.model.Cliente;
+import com.code058.model.Pedido;
 
 import java.util.List;
 import java.util.Map;
@@ -134,6 +135,10 @@ public class VistaConsola {
         System.out.println("5. Mostrar Pedidos Completados");
         System.out.println("6. Mostrar Pedidos Completados filtrados por Cliente");
         System.out.println("0. Ir al menu principal");
+    }
+
+    public void mostrarPedidos(List<Pedido> p){
+        p.forEach(pedido -> System.out.println(pedido));
     }
 
 }
