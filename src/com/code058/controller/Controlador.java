@@ -230,19 +230,19 @@ public class Controlador {
                     anadirPedido();
                     break;
                 case 2:
-                    //eliminarPedido();
+                    eliminarPedido();
                     break;
                 case 3:
-                    //mostrarPedidosPendientes();
+                    mostrarPedidosPendientes();
                     break;
                 case 4:
-                    //mostrarPedidosPendienteConFiltradoDeCliente();
+                    mostrarPedidosPendienteConFiltradoDeCliente();
                     break;
                 case 5:
-                    //mostrarPedidosEnviados();
+                    mostrarPedidosEnviados();
                     break;
                 case 6:
-                    //mostrarPedidosEnviadosConFiltradoDeCliente();
+                    mostrarPedidosEnviadosConFiltradoDeCliente();
                     break;
                 case 0:
                     vista.mostrarMensaje("Volviendo al Menú Principal");
@@ -308,6 +308,48 @@ public class Controlador {
         modelo.crearPedido(nuevoPedido);
         vista.mostrarMensaje("Pedido creado con exito.");
 
+
+    }
+
+    private void eliminarPedido(){
+        //System.out.println(modelo.getPedidos().toString());
+        vista.mostrarMensaje("Introduce el numero de pedido a eliminar:");
+        int numPedido = vista.pedirInt();
+
+        try{
+            String mensaje = modelo.eliminarPedido(numPedido);
+            vista.mostrarMensaje(mensaje);
+        } catch (com.code058.exceptions.PedidoNoCancelableException e){
+            vista.mostrarError(e.getMessage());
+        }
+    }
+
+    private void mostrarPedidosPendientes(){
+        vista.mostrarPedidos(modelo.getPedidosPendientes());
+    }
+
+    private void mostrarPedidosPendienteConFiltradoDeCliente(){
+        vista.mostrarMensaje("Ingresa un email de cliente");
+        String email = vista.pedirString();
+        if (modelo.getPedidosPendientes().isEmpty()){
+            vista.mostrarMensaje("El cliente con el email:" + email + " no tiene pedidos enviados");
+        }else {
+            vista.mostrarPedidos(modelo.getPedidosPendientes(email));
+        }
+    }
+
+    private void mostrarPedidosEnviados(){
+        vista.mostrarPedidos(modelo.getPedidosEviados());
+    }
+
+    private void mostrarPedidosEnviadosConFiltradoDeCliente(){
+        vista.mostrarMensaje("Ingresa un email de cliente");
+        String email = vista.pedirString();
+        if (modelo.getPedidosEviados(email).isEmpty()){
+            vista.mostrarMensaje("El cliente con el email:" + email + " no tiene pedidos enviados");
+        }else {
+            vista.mostrarPedidos(modelo.getPedidosEviados(email));
+        }
 
     }
 
