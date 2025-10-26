@@ -12,14 +12,14 @@ public class GestorDeDatosPedidoTest {
     public void testEliminarPedidoCancelableExcepcion() throws PedidoNoCancelableException {
         GestorDeDatos gestor = new GestorDeDatos();
         Cliente cliente = new ClienteEstandar("Laura", "Calle dos 2", "321", "laura@email.com");
-        Articulo articulo= new Articulo("A2", "Reloj", 50.0, 5.0, 1);
+        Articulo articulo= new Articulo("A2", "Reloj", 50.0, 5.0, 60);
 
         //Añadimos cliente y artículo al gestor
         gestor.getClientes().put(cliente.getEmail(), cliente);
         gestor.getArticulos().put(articulo.getCodigo(), articulo);
 
         //Pedido con tiempo de preparación vencido - no cancelable
-        Pedido pedido = new Pedido(cliente, articulo, 1,1, LocalDateTime.now().minusMinutes(10) ,articulo.getGastoEnvio(), articulo.getTiempoPreparacionMin());
+        Pedido pedido = new Pedido(cliente, articulo, 1,1, LocalDateTime.now() ,articulo.getGastoEnvio(), articulo.getTiempoPreparacionMin());
 
         //Creamos pedido
         gestor.crearPedido(pedido);
@@ -49,6 +49,5 @@ public class GestorDeDatosPedidoTest {
 
         //Comprobamos que se haya eliminado
         assertTrue(gestor.getPedidos().isEmpty());
-
     }
 }
