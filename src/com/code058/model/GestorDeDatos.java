@@ -3,6 +3,7 @@ package com.code058.model;
 import com.code058.exceptions.DuplicadosException;
 import com.code058.exceptions.PedidoNoCancelableException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +111,17 @@ public class GestorDeDatos {
         return resultado;
     }
 
+    public List<Pedido> getPedidosPendientes(){
+        List<Pedido> resultado = new ArrayList<>();
+        for(Pedido p : pedidos){
+            boolean pendiente = p.esCancelable();
+            if(pendiente){
+                resultado.add(p);
+            }
+        }
+        return resultado;
+    }
+
     public List<Pedido> getPedidosEviados(String emailCliente){
         List<Pedido> resultado = new ArrayList<>();
         for(Pedido p : pedidos){
@@ -118,6 +130,19 @@ public class GestorDeDatos {
             if(pendiente && coincide){
                 resultado.add(p);
             }
+        }
+
+        return resultado;
+    }
+
+    public List<Pedido> getPedidosEviados(){
+        List<Pedido> resultado = new ArrayList<>();
+        for(Pedido p : pedidos){
+            boolean pendiente = !p.esCancelable();
+            if (pendiente){
+                resultado.add(p);
+            }
+
         }
         return resultado;
     }
@@ -129,9 +154,9 @@ public class GestorDeDatos {
         ClientePremium cp = new ClientePremium("asd", "Calle padilla 123", "X1234567Z", "asd@asd.com");
         // Usamos el email como clave para el HashMap
         this.clientes.put(cp.getEmail(), cp);
+
         ClienteEstandar cp1 = new ClienteEstandar("qwe", "Calle padilla 123", "X1324567Z", "qwe@qwe.com");
-        // Usamos el email como clave para el HashMap
-        this.clientes.put(cp.getEmail(), cp1);
+        this.clientes.put(cp1.getEmail(), cp1);
 
         Articulo a1 = new Articulo("asd1", "Laptop de 15 pulg.", 800.0, 10.0, 1);
         this.articulos.put(a1.getCodigo(), a1);
@@ -139,8 +164,11 @@ public class GestorDeDatos {
         Articulo a2 = new Articulo("asd2", "Laptop de 15 pulg.", 800.0, 10.0, 5);
         this.articulos.put(a2.getCodigo(), a2);
 
-        Pedido p1 = new Pedido(cp, a1, 1, 1, null, 15.0, 1);
+        Pedido p1 = new Pedido(cp, a1, 1, 1, LocalDateTime.of(2025,10,26,13,23,0), 15.0, 5);
         this.pedidos.add(p1);
+
+        Pedido p2 = new Pedido(cp1, a1 , 2, 3,LocalDateTime.now(), 20, 60);
+        this.pedidos.add(p2);
     }
 
 }
