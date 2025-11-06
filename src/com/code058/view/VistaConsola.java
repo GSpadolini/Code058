@@ -2,6 +2,7 @@ package com.code058.view;
 
 import com.code058.model.Articulo;
 import com.code058.model.Cliente;
+import com.code058.model.Pedido;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,6 @@ public class VistaConsola {
             opcion = scanner.nextInt();
             scanner.nextLine();
         } catch (java.util.InputMismatchException e) {
-
             scanner.nextLine();
             mostrarError("Entrada no válida. Por favor, introduce un número.");
             opcion = -1;
@@ -50,9 +50,7 @@ public class VistaConsola {
     }
 
     public String pedirString(){
-        String palabra;
-        palabra = scanner.nextLine();
-        return palabra;
+        return scanner.nextLine();
     }
 
     public double pedirDouble(){
@@ -61,7 +59,6 @@ public class VistaConsola {
 
         do {
             String numeroString = scanner.nextLine();
-
             try {
                 numeroDecimal = Double.parseDouble(numeroString);
                 valido = true;
@@ -95,21 +92,60 @@ public class VistaConsola {
         System.out.println("2. Mostrat Articulo");
         System.out.println("0. Ir al menu principal");
     }
+
+    // ----------------------------
+    // NUEVO: imprimir por LIST (recomendado)
+    // ----------------------------
+    public void imprimirListaArticulos(List<Articulo> articulos) {
+        if (articulos == null || articulos.isEmpty()) {
+            System.out.println("No hay artículos.");
+            return;
+        }
+        System.out.println("=== LISTA ARTÍCULOS ===");
+        for (Articulo a : articulos) {
+            System.out.println(a); // usa toString de Articulo
+        }
+    }
+
+    public void imprimirListaClientes(List<Cliente> clientes){
+        if (clientes == null || clientes.isEmpty()) {
+            System.out.println("No hay clientes.");
+            return;
+        }
+        System.out.println("=== LISTA CLIENTES ===");
+        for (Cliente c : clientes) {
+            System.out.println(c); // usa toString de Cliente / subclases
+        }
+    }
+
+    // ----------------------------
+    // MANTENER compatibilidad: imprimir por MAP (antigua)
+    // ----------------------------
     public void imprimirListaArticulos(Map<String, Articulo> articulos) {
+        if (articulos == null || articulos.isEmpty()) {
+            System.out.println("No hay artículos (map).");
+            return;
+        }
+        System.out.println("=== MAP ARTÍCULOS ===");
         articulos.forEach((codigo, articulo) ->
                 System.out.println("Codigo del Articulo: " + codigo + ", " + articulo)
         );
     }
 
     public void imprimirListaClientes(Map<String, Cliente> clientes){
+        if (clientes == null || clientes.isEmpty()) {
+            System.out.println("No hay clientes (map).");
+            return;
+        }
+        System.out.println("=== MAP CLIENTES ===");
         clientes.forEach((email,cliente) ->
                 System.out.println("Email " + email + ", " + cliente));
     }
 
     public void imprimirListaClientesFiltrados(List<Cliente> lista){
-        if(lista.isEmpty()){
+        if(lista == null || lista.isEmpty()){
             System.out.println("No hay clientes en esta categoría");
-        }else{
+        } else {
             lista.forEach(c -> System.out.println(c.toString()));
         }
     }
@@ -136,4 +172,21 @@ public class VistaConsola {
         System.out.println("0. Ir al menu principal");
     }
 
+    public void imprimirListaPedidos(List<Pedido> pedidos) {
+        if (pedidos == null || pedidos.isEmpty()) {
+            System.out.println("No hay pedidos para mostrar.");
+            return;
+        }
+
+        System.out.println("=== LISTA DE PEDIDOS ===");
+        for (Pedido p : pedidos) {
+            System.out.println("Número: " + p.getNumeroPedido() +
+                    " | Cliente: " + p.getCliente().getEmail() +
+                    " | Artículo: " + p.getArticulo().getCodigo() +
+                    " | Cantidad: " + p.getCantidad() +
+                    " | Fecha: " + p.getFechaPedido() +
+                    " | Tiempo preparación: " + p.getTiempoPreparacion() + " min" +
+                    " | Total: " + p.getPrecioTotal());
+        }
+    }
 }
