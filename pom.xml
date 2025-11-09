@@ -18,6 +18,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
         <!-- Dependencia de JUnit 4 -->
         <dependency>
             <groupId>junit</groupId>
@@ -26,5 +31,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 
 </project>

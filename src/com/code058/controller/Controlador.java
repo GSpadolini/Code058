@@ -18,7 +18,7 @@ public class Controlador {
         this.vista = vista;
     }
 
-    // El método de arranque que pide la App.java
+    // El metodo de arranque que pide la App.java
     public void iniciar() throws DuplicadosException {
 
             int opcion;

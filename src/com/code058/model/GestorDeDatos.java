@@ -150,20 +150,20 @@ public class GestorDeDatos {
 
     //Datos prueba
     private void cargarDatosIniciales() {
-        // Ejemplo de carga para pruebas:
-        ClientePremium cp = new ClientePremium("asd", "Calle padilla 123", "X1234567Z", "asd@asd.com");
-        // Usamos el email como clave para el HashMap
-        this.clientes.put(cp.getEmail(), cp);
 
-        ClienteEstandar cp1 = new ClienteEstandar("qwe", "Calle padilla 123", "X1324567Z", "qwe@qwe.com");
-        this.clientes.put(cp1.getEmail(), cp1);
-
-        Articulo a1 = new Articulo("asd1", "Laptop de 15 pulg.", 800.0, 10.0, 1);
-        this.articulos.put(a1.getCodigo(), a1);
-
-        Articulo a2 = new Articulo("asd2", "Laptop de 15 pulg.", 800.0, 10.0, 5);
-        this.articulos.put(a2.getCodigo(), a2);
-
+//        ClientePremium cp = new ClientePremium("asd", "Calle padilla 123", "X1234567Z", "asd@asd.com");
+//
+//        this.clientes.put(cp.getEmail(), cp);
+//
+//        ClienteEstandar cp1 = new ClienteEstandar("qwe", "Calle padilla 123", "X1324567Z", "qwe@qwe.com");
+//        this.clientes.put(cp1.getEmail(), cp1);
+//
+//        Articulo a1 = new Articulo("asd1", "Laptop de 15 pulg.", 800.0, 10.0, 1);
+//        this.articulos.put(a1.getCodigo(), a1);
+//
+//        Articulo a2 = new Articulo("asd2", "Laptop de 15 pulg.", 800.0, 10.0, 5);
+//        this.articulos.put(a2.getCodigo(), a2);
+//
 //        Pedido p1 = new Pedido(cp, a1, 1, 1, LocalDateTime.of(2025,10,26,13,23,0), 15.0, 5);
 //        this.pedidos.add(p1);
 //

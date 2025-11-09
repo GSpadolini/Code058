@@ -8,11 +8,11 @@ public abstract class Cliente {
 
     public Cliente (){};
 
-    public Cliente(String nombre, String domicilio, String nif, String email) {
+    public Cliente(String email, String nombre, String domicilio, String nif) {
+        this.email = email; // PK
         this.nombre = nombre;
         this.domicilio = domicilio;
         this.nif = nif;
-        this.email = email;
     }
 
     public String getNombre() {

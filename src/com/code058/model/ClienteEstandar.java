@@ -4,8 +4,8 @@ public class ClienteEstandar extends Cliente{
     public ClienteEstandar() {
     }
 
-    public ClienteEstandar(String domicilio, String nombre, String nif, String email) {
-        super(domicilio, nombre, nif, email);
+    public ClienteEstandar(String email, String nombre, String domicilio, String nif) {
+        super(email, nombre, domicilio, nif);
     }
 
     @Override
