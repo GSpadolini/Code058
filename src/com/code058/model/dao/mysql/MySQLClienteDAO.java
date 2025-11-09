@@ -103,7 +103,7 @@ public class MySQLClienteDAO implements ClienteDAO {
 
         try (Connection conn = DBConnectionUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(SELECT_ALL_SQL);
-             ResultSet rs = ps.executeQuery()) { 
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 // Mapeamos y añadimos a la lista en cada iteración
