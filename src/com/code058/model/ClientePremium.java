@@ -4,10 +4,13 @@ public class ClientePremium extends Cliente{
 
     private double cuotaAnual;
 
-    public ClientePremium() {}
+    public ClientePremium(String email, String nombre, String domicilio, String nif, double cuotaAnual) {
+        super(email, nombre, domicilio, nif); // LLAMA AL CONSTRUCTOR DE LA BASE
+        this.cuotaAnual = cuotaAnual;
+    }
 
-    public ClientePremium(String nombre, String domicilio, String nif, String email) {
-        super(nombre, domicilio, nif, email);
+    public ClientePremium(String email, String nombre, String domicilio, String nif) {
+        super(email, nombre, domicilio, nif);
         this.cuotaAnual = 30.00;
     }
 
