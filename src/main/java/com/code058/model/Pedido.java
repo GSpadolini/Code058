@@ -14,7 +14,7 @@ public class Pedido {
     private int tiempoPreparacion;
 
 
-    public Pedido(){};
+    public Pedido(){}
 
     public Pedido(Cliente cliente, Articulo articulo, int numeroPedido, int cantidad, LocalDateTime fechaPedido, double gastoEnvio, int tiempoPreparacion) {
         this.cliente=cliente;
@@ -24,6 +24,23 @@ public class Pedido {
         this.fechaPedido = fechaPedido;
         this.gastoEnvio = gastoEnvio;
         this.tiempoPreparacion = tiempoPreparacion;
+    }
+
+    public Pedido(int numeroPedido, String clienteEmail, String articuloCodigo,
+                  int cantidad, LocalDateTime fechaPedido,
+                  double gastoEnvio, int tiempoPreparacion) {
+        this.numeroPedido = numeroPedido;
+        this.cantidad = cantidad;
+        this.fechaPedido = fechaPedido;
+        this.gastoEnvio = gastoEnvio;
+        this.tiempoPreparacion = tiempoPreparacion;
+
+        // Crear cliente y artículo mínimos
+        this.cliente = new ClienteEstandar(); // o ClientePremium, según tu caso
+        this.cliente.setEmail(clienteEmail);
+
+        this.articulo = new Articulo();
+        this.articulo.setCodigo(articuloCodigo);
     }
 
     public Cliente getCliente() {

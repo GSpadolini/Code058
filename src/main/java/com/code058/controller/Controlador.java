@@ -32,10 +32,10 @@ public class Controlador {
                         gestionarArticulos();
                         break;
                     case 2:
-                        gestionarClientes(); // Por hacer
+                        gestionarClientes();
                         break;
                     case 3:
-                        // gestionarPedidos(); // Por hacer
+                        gestionarPedidos();
                         break;
                     case 0:
                         vista.mostrarMensaje("Saliendo de la aplicación. ¡Hasta pronto!");
@@ -111,18 +111,22 @@ public class Controlador {
             opcion = vista.pedirOpcion();
             switch (opcion) {
                 case 1:
-                    // anadirCliente(); // Por hacer
+                    try {
+                        anadirCliente();
+                    } catch (DuplicadosException e) {
+                        vista.mostrarError(e.getMessage());
+                    }
                     break;
                 case 2:
-                    // mostrarClientes(); // Por hacer
+                    mostrarClientes();
                     break;
 
                 case 3:
-                    // mostrarClientesEstandar(); // Por hacer
+                    mostrarClientesEstandar();
                     break;
 
                 case 4:
-                    // mostrarClientesPremium(); // Por hacer
+                    mostrarClientesPremium();
                     break;
                 case 0:
                     vista.mostrarMensaje("Volviendo al Menú Principal");
@@ -170,6 +174,70 @@ public class Controlador {
 
     private void mostrarClientesPremium(){
         vista.imprimirListaClientesFiltrados(modelo.getClientesPremium());
+    }
+
+    private void gestionarPedidos(){
+        int opcion;
+        do{
+            vista.mostrarMensaje("-- GESTION DE PEDIDOS --");
+            vista.mostrarMensaje("1. Crear Pedido");
+            vista.mostrarMensaje("2. Mostrar Pedidos");
+            vista.mostrarMensaje("0. Volver al Menu Principal");
+            opcion = vista.pedirOpcion();
+
+            switch (opcion){
+                case 1:
+                    crearPedido();
+                    break;
+                case 2:
+                    mostrarPedido();
+                    break;
+                case 0:
+                    vista.mostrarMensaje("Volviendo al Menú Princial");
+                    break;
+                default:
+                    vista.mostrarMensaje("Opcion no valida.");
+                    break;
+            }
+        } while (opcion !=0);
+    }
+
+    private void crearPedido() {
+        vista.mostrarMensaje("Email del cliente: ");
+        String email = vista.pedirString();
+
+        vista.mostrarMensaje("Código del artículo: ");
+        String codigo = vista.pedirString();
+
+        vista.mostrarMensaje("Unidades: ");
+        int unidades = vista.pedirInt();
+
+        vista.mostrarMensaje("Gasto de envío: ");
+        double gastoEnvio = vista.pedirDouble();
+
+        vista.mostrarMensaje("Tiempo de preparación (min): ");
+        int tiempoPrep = vista.pedirInt();
+
+        Pedido nuevo = new Pedido(
+                0,  // número de pedido (autoincremental)
+                email,
+                codigo,
+                unidades,
+                java.time.LocalDateTime.now(),
+                gastoEnvio,
+                tiempoPrep
+        );
+
+        modelo.crearPedido(nuevo);
+    }
+
+    private void mostrarPedido() {
+        var pedidos = modelo.getPedidos();
+        if (pedidos.isEmpty()) {
+            vista.mostrarMensaje("No hay pedidos registrados.");
+        } else {
+            pedidos.forEach(p -> System.out.println(p.toString()));
+        }
     }
 }
 
