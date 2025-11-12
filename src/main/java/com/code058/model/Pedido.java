@@ -45,6 +45,10 @@ public class Pedido {
         return articulo;
     }
 
+    public String getArticuloCodigo() {
+        return (articulo != null) ? articulo.getCodigo() : null;
+    }
+
     public void setArticulo(Articulo articulo) {
         this.articulo = articulo;
     }
