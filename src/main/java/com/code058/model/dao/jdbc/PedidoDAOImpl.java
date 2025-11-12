@@ -12,16 +12,8 @@ public class PedidoDAOImpl implements PedidoDAO {
 
     @Override
     public void insertar(Pedido pedido) throws SQLException {
-        String sql = """
-            INSERT INTO pedido (
-                cliente_email,
-                articulo_codigo,
-                unidades,
-                fecha_pedido,
-                gasto_envio,
-                tiempo_preparacion_min
-            ) VALUES (?, ?, ?, ?, ?, ?)
-            """;
+        String sql = "INSERT INTO pedido (cliente_email, articulo_codigo, unidades, fecha_hora, gasto_envio, tiempo_preparacion_min) VALUES (?, ?, ?, ?, ?, ?)";
+
 
         Connection conn = DBConnection.getConnection();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

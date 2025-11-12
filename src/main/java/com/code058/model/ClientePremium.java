@@ -3,12 +3,20 @@ package com.code058.model;
 public class ClientePremium extends Cliente{
 
     private double cuotaAnual;
+    private double descuentoEnvio;
 
     public ClientePremium() {}
 
     public ClientePremium(String nombre, String domicilio, String nif, String email) {
         super(nombre, domicilio, nif, email);
         this.cuotaAnual = 30.00;
+    }
+
+    public ClientePremium(String nombre, String domicilio, String nif, String email,
+                          double cuotaAnual, double descuentoEnvio) {
+        super(nombre, domicilio, nif, email);
+        this.cuotaAnual = cuotaAnual;
+        this.descuentoEnvio = descuentoEnvio;
     }
 
     public double getCuotaAnual() {

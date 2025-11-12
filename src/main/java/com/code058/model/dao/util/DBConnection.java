@@ -14,6 +14,7 @@ public class DBConnection{
             String password = "admin123";
 
             conn = DriverManager.getConnection(url, user, password);
+            conn.setAutoCommit(false);
         }
         return conn;
     }

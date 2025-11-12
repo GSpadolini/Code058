@@ -30,7 +30,7 @@ public class ClienteDAOImpl implements ClienteDAO {
                 ClientePremium c = (ClientePremium) cliente;
                 ps.setString(5, "PREMIUM");
                 ps.setDouble(6, c.getCuotaAnual());
-                ps.setDouble(7, c.getDescuentoEnvio());
+                ps.setDouble(7, c.descuentoEnvio());
             }
             ps.executeUpdate();
             conn.commit();
