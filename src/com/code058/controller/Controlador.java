@@ -362,7 +362,7 @@ public class Controlador {
         // 5) Guardar pedido en el modelo (que delega a DAO/BD)
         modelo.crearPedido(nuevoPedido);
 
-        // Si tu DAO asigna el número de pedido al objeto (ver implementación), lo mostramos:
+        // Si DAO asigna el número de pedido al objeto, lo mostramos:
         vista.mostrarMensaje("Pedido creado con exito. Número: " + nuevoPedido.getNumeroPedido());
     }
 

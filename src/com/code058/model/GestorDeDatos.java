@@ -17,7 +17,9 @@ public class GestorDeDatos {
     private final ClienteDAO clienteDAO;
     private final PedidoDAO pedidoDAO;
 
+    // Constructor
     public GestorDeDatos() {
+        // Obtén las instancias desde la fábrica
         this.articuloDAO = DAOFactory.getArticuloDAO();
         this.clienteDAO  = DAOFactory.getClienteDAO();
         this.pedidoDAO   = DAOFactory.getPedidoDAO();
