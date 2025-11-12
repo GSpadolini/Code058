@@ -34,6 +34,13 @@ public class Pedido {
         this.cliente = cliente;
     }
 
+    public String getClienteEmail(){
+        if(cliente != null){
+            return cliente.getEmail();
+        }
+        return null;
+    }
+
     public Articulo getArticulo() {
         return articulo;
     }

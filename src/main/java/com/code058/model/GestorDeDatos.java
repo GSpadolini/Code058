@@ -2,127 +2,150 @@ package com.code058.model;
 
 import com.code058.exceptions.DuplicadosException;
 import com.code058.exceptions.PedidoNoCancelableException;
+import com.code058.model.dao.*;
+import com.code058.model.dao.jdbc.MySQLDAOFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 public class GestorDeDatos {
 
-    // Uso de Genéricos: Map<Clave, Valor> y List<Elemento>
-    private Map<String, Cliente> clientes;
-    private Map<String, Articulo> articulos;
-    private List<Pedido> pedidos;
+    private final ArticuloDAO articuloDAO;
+    private final ClienteDAO clienteDAO;
+    private final PedidoDAO pedidoDAO;
 
     public GestorDeDatos() {
-        // Inicialización de las estructuras de datos dinámicas
-        this.clientes = new HashMap<>(); // Diccionario
-        this.articulos = new HashMap<>(); // Diccionario
-        this.pedidos = new ArrayList<>(); // Lista
-
-        // Opcional: Cargar datos de prueba para empezar a probar la aplicación
-        cargarDatosIniciales();
+        // Inicializamos los DAO a través de la fábrica
+        DAOFactory factory = new MySQLDAOFactory();
+        this.articuloDAO = factory.getArticuloDAO();
+        this.clienteDAO = factory.getClienteDAO();
+        this.pedidoDAO = factory.getPedidoDAO();
     }
 
-    //Gestión artículos
-    public void anadirArticulo(Articulo articulo) throws DuplicadosException{
-        if (this.articulos.containsKey(articulo.getCodigo())) {
-            throw new DuplicadosException("Error de negocio: El artículo con código " + articulo.getCodigo() + " ya existe.");
+
+    // GESTIÓN DE ARTÍCULOS
+    public void anadirArticulo(Articulo articulo) throws DuplicadosException {
+        try {
+            if (articuloDAO.existeCodigo(articulo.getCodigo())) {
+                throw new DuplicadosException("Error: El artículo con código " + articulo.getCodigo() + " ya existe.");
+            }
+            articuloDAO.insertar(articulo);
+            System.out.println("✅ Artículo añadido correctamente.");
+        } catch (SQLException e) {
+            System.err.println("❌ Error al insertar artículo: " + e.getMessage());
         }
-        this.articulos.put(articulo.getCodigo(), articulo);
     }
 
     public Map<String, Articulo> getArticulos() {
-        return this.articulos;
-    }
-
-    // Aquí irán los métodos de lógica de negocio (ej: anadirCliente(), crearPedido(), etc.)
-
-    //Gestión cliente
-    public void anadirCliente(Cliente cliente) throws DuplicadosException{
-        if(this.clientes.containsKey((cliente.getEmail()))){
-            throw new DuplicadosException(("El cliente con el email " + cliente.getEmail()) + " ya existe");
+        try {
+            return articuloDAO.listarTodos();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al obtener los artículos", e);
         }
-        this.clientes.put(cliente.getEmail(), cliente);
     }
 
-    public Map<String, Cliente> getClientes(){ return  this.clientes; }
-
-    public List<Cliente> getClientesEstandar(){
-        List<Cliente> lista = new ArrayList<>();
-        for(Cliente c : clientes.values()){
-            if( c instanceof ClienteEstandar) lista.add(c);
-        }
-        return lista;
-    }
-    public List<Cliente> getClientesPremium(){
-        List<Cliente> lista = new ArrayList<>();
-        for(Cliente c : clientes.values()){
-            if( c instanceof ClientePremium) lista.add(c);
-        }
-        return lista;
-    }
-
-    //Gestión pedidos
-    public void crearPedido(Pedido pedido){
-        this.pedidos.add(pedido);
-    }
-
-    public void eliminarPedido(int numPedido) throws PedidoNoCancelableException{
-        for(int i = 0; i < pedidos.size(); i++){
-            Pedido p = pedidos.get(i);
-
-            if( p.getNumeroPedido() == numPedido){
-                if(!p.esCancelable()){
-                    throw new PedidoNoCancelableException("El pedido " + numPedido + " no puede cancelarse (ya se ha enviado)");
-                }
-
-                pedidos.remove(i);
-                System.out.println("Pedido eliminado correctamente");
-                return;
+    // GESTIÓN DE CLIENTES
+    public void anadirCliente(Cliente cliente) throws DuplicadosException {
+        try {
+            if (clienteDAO.existeEmail(cliente.getEmail())) {
+                throw new DuplicadosException("Error: el cliente con email " + cliente.getEmail() + " ya existe.");
             }
+            clienteDAO.insertar(cliente);
+            System.out.println("Cliente añadido correctamente.");
+        } catch (SQLException e) {
+            System.err.println("Error al insertar cliente: " + e.getMessage());
         }
-        System.out.println("Pedido no encontrado");
+    }
+
+    public Map<String, Cliente> getClientes() {
+        try {
+            return clienteDAO.listarTodos();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al obtener los clientes", e);
+        }
+    }
+
+    public List<Cliente> getClientesEstandar() {
+        try {
+            return getClientes().values().stream()
+                    .filter(c -> c instanceof ClienteEstandar)
+                    .toList();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al filtrar clientes estándar", e);
+        }
+    }
+
+    public List<Cliente> getClientesPremium() {
+        try {
+            return getClientes().values().stream()
+                    .filter(c -> c instanceof ClientePremium)
+                    .toList();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al filtrar clientes premium", e);
+        }
+    }
+
+
+    // GESTIÓN DE PEDIDOS
+    public void crearPedido(Pedido pedido) {
+        try {
+            pedidoDAO.insertar(pedido);
+            System.out.println("Pedido creado correctamente.");
+        } catch (SQLException e) {
+            System.err.println("Error al crear pedido: " + e.getMessage());
+        }
+    }
+
+    public void eliminarPedido(int numPedido) throws PedidoNoCancelableException {
+        try {
+            // Si tu clase Pedido tiene lógica interna para cancelación, deberías consultar antes de borrar
+            List<Pedido> pedidos = pedidoDAO.listarTodos();
+            for (Pedido p : pedidos) {
+                if (p.getNumeroPedido() == numPedido) {
+                    if (!p.esCancelable()) {
+                        throw new PedidoNoCancelableException("El pedido " + numPedido + " no puede cancelarse (ya enviado).");
+                    }
+                    pedidoDAO.eliminar(numPedido);
+                    System.out.println("Pedido eliminado correctamente.");
+                    return;
+                }
+            }
+            System.out.println("Pedido no encontrado.");
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar pedido: " + e.getMessage());
+        }
     }
 
     public List<Pedido> getPedidos() {
-        return this.pedidos;
-    }
-
-    public List<Pedido> getPedidosPendientes(String emailCliente){
-        List<Pedido> resultado = new ArrayList<>();
-        for(Pedido p : pedidos){
-            boolean pendiente = p.esCancelable();
-            boolean coincide = (emailCliente == null) || p.getCliente().getEmail().equalsIgnoreCase(emailCliente);
-            if(pendiente && coincide){
-                resultado.add(p);
-            }
+        try {
+            return pedidoDAO.listarTodos();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al obtener los pedidos", e);
         }
-        return resultado;
     }
 
-    public List<Pedido> getPedidosEviados(String emailCliente){
-        List<Pedido> resultado = new ArrayList<>();
-        for(Pedido p : pedidos){
-            boolean pendiente = !p.esCancelable();
-            boolean coincide = (emailCliente == null) || p.getCliente().getEmail().equalsIgnoreCase(emailCliente);
-            if(pendiente && coincide){
-                resultado.add(p);
-            }
+    public List<Pedido> getPedidosPendientes(String emailCliente) {
+        try {
+            return pedidoDAO.listarTodos().stream()
+                    .filter(p -> p.esCancelable() &&
+                            (emailCliente == null || p.getClienteEmail().equalsIgnoreCase(emailCliente)))
+                    .toList();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al obtener pedidos pendientes", e);
         }
-        return resultado;
     }
 
-    //Datos prueba
-    private void cargarDatosIniciales() {
-        // Ejemplo de carga para pruebas:
-        ClientePremium cp = new ClientePremium("G. Spadolini", "Calle padilla 123", "X1234567Z", "giancarlo@uoc.edu");
-        // Usamos el email como clave para el HashMap
-        this.clientes.put(cp.getEmail(), cp);
-
-        Articulo a1 = new Articulo("REF001", "Laptop de 15 pulg.", 800.0, 10.0, 60);
-        this.articulos.put(a1.getCodigo(), a1);
+    public List<Pedido> getPedidosEnviados(String emailCliente) {
+        try {
+            return pedidoDAO.listarTodos().stream()
+                    .filter(p -> !p.esCancelable() &&
+                            (emailCliente == null || p.getClienteEmail().equalsIgnoreCase(emailCliente)))
+                    .toList();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al obtener pedidos enviados", e);
+        }
     }
 
 }
+

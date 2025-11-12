@@ -7,5 +7,5 @@ import java.util.Map;
 public interface ArticuloDAO {
     void insertar(Articulo articulo) throws SQLException;
     Map<String, Articulo> listarTodos() throws SQLException;
-    boolean existeCodifo(String codigo) throws SQLException;
+    boolean existeCodigo(String codigo) throws SQLException;
 }
