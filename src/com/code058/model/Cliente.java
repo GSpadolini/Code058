@@ -1,5 +1,4 @@
-package code058.model;
-
+package com.code058.model;
 
 public abstract class Cliente {
     private String nombre;

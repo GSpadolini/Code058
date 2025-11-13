@@ -1,9 +1,9 @@
 package com.code058;
 
+import com.code058.view.VistaConsola;
 import com.code058.controller.Controlador;
 import com.code058.exceptions.DuplicadosException;
 import com.code058.model.GestorDeDatos;
-import com.code058.view.VistaConsola;
 
 public class App {
     public static void main(String[] args) throws DuplicadosException {

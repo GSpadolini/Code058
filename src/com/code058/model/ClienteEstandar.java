@@ -1,4 +1,4 @@
-package code058.model;
+package com.code058.model;
 
 public class ClienteEstandar extends Cliente{
     public ClienteEstandar() {
