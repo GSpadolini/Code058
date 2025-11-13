@@ -1,10 +1,9 @@
 package com.code058.controller;
 
-import com.code058.view.VistaConsola;
 import com.code058.exceptions.DuplicadosException;
 import com.code058.model.*;
+import com.code058.view.VistaConsola;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Controlador {
@@ -19,7 +18,7 @@ public class Controlador {
     }
 
     // El método de arranque que pide la App.java
-    public void iniciar() throws DuplicadosException {
+    public void iniciar() {
 
         int opcion;
         do {
@@ -33,16 +32,16 @@ public class Controlador {
                     gestionarArticulos();
                     break;
                 case 2:
-                    gestionarClientes(); // Por hacer
+                    gestionarClientes();
                     break;
                 case 3:
-                    gestionarPedidos(); // Por hacer
+                    gestionarPedidos();
                     break;
                 case 0:
                     vista.mostrarMensaje("Saliendo de la aplicación. ¡Hasta pronto!");
                     break;
                 default:
-                    vista.mostrarError("Opción no válida. introduce un número del menú(1 2 3 o 0).");
+                    // Si la opción devuelta por la Vista no es válida, no hacemos nada, se repite el bucle.
                     break;
             }
         } while (opcion != 0);
@@ -104,7 +103,7 @@ public class Controlador {
     }
 
     //Pedidos
-    private void gestionarClientes(){
+    private void gestionarClientes() {
 
         int opcion;
         do {
@@ -112,7 +111,11 @@ public class Controlador {
             opcion = vista.pedirOpcion();
             switch (opcion) {
                 case 1:
-                    anadirCliente();
+                    try {
+                        anadirCliente();
+                    } catch (DuplicadosException e) {
+                        vista.mostrarError(e.getMessage());
+                    }
                     break;
                 case 2:
                     mostrarClientes();
@@ -136,74 +139,28 @@ public class Controlador {
     }
 
     //Clientes
-    private void anadirCliente(){
+    private void anadirCliente()throws DuplicadosException{
         vista.mostrarMensaje("Nombre: ");
         String nombre = vista.pedirString();
         vista.mostrarMensaje("Domicilio: ");
         String domicilio = vista.pedirString();
         vista.mostrarMensaje("NIF: ");
         String nif = vista.pedirString();
-        vista.mostrarMensaje("Email:");
+        vista.mostrarMensaje("Emal:");
         String email = vista.pedirString();
-        vista.mostrarMensaje("¿Tipo de cliente? (1 = Estandar, 2 = Premium)");
+        vista.mostrarMensaje("¿Tipo de cliente? (1 = Estandar, 2  Premium)");
         int tipo = vista.pedirInt();
 
-        Cliente nuevo = null;
+        Cliente nuevo;
 
-        do {
-            if (tipo != 1 && tipo != 2) {
-                vista.mostrarMensaje("Tipo no válido. Introduzca 1 para Estandar o 2 para Premium:");
-                tipo = vista.pedirInt();
-            }
-            if(tipo == 2){
-                nuevo = new ClientePremium(nombre, domicilio, nif, email);
-            }
-            if (tipo == 1){
-                nuevo = new ClienteEstandar(nombre, domicilio, nif, email);
-            }
-        } while (tipo != 1 && tipo != 2);
-
-
-        try{
-            modelo.anadirCliente(nuevo);
-            vista.mostrarMensaje("Cliente " + email + " añadido con éxito.");
-        }catch (com.code058.exceptions.DuplicadosException e){
-            vista.mostrarError(e.getMessage()); // La maneja y usa la VISTA para el error
+        if(tipo ==2){
+            nuevo = new ClientePremium(nombre, domicilio, nif, email);
+        }else{
+            nuevo = new ClienteEstandar(nombre, domicilio, nif, email);
         }
-    }
 
-    private void anadirCliente(String email){
-        vista.mostrarMensaje("Nombre: ");
-        String nombre = vista.pedirString();
-        vista.mostrarMensaje("Domicilio: ");
-        String domicilio = vista.pedirString();
-        vista.mostrarMensaje("NIF: ");
-        String nif = vista.pedirString();
-        vista.mostrarMensaje("¿Tipo de cliente? (1 = Estandar, 2 = Premium)");
-        int tipo = vista.pedirInt();
-
-        Cliente nuevo = null;
-
-        do {
-            if (tipo != 1 && tipo != 2) {
-                vista.mostrarMensaje("Tipo no válido. Introduzca 1 para Estandar o 2 para Premium:");
-                tipo = vista.pedirInt();
-            }
-            if(tipo == 2){
-                nuevo = new ClientePremium(nombre, domicilio, nif, email);
-            }
-            if (tipo == 1){
-                nuevo = new ClienteEstandar(nombre, domicilio, nif, email);
-            }
-        } while (tipo != 1 && tipo != 2);
-
-
-        try{
-            modelo.anadirCliente(nuevo);
-            vista.mostrarMensaje("Cliente " + email + " añadido con éxito.");
-        }catch (com.code058.exceptions.DuplicadosException e){
-            vista.mostrarError(e.getMessage()); // La maneja y usa la VISTA para el error
-        }
+        modelo.anadirCliente(nuevo);
+        vista.mostrarMensaje("Cliente añadido correctamente");
     }
 
     private void mostrarClientes(){
@@ -219,139 +176,67 @@ public class Controlador {
         vista.imprimirListaClientesFiltrados(modelo.getClientesPremium());
     }
 
-    private void gestionarPedidos() {
-
+    private void gestionarPedidos(){
         int opcion;
-        do {
-            vista.mostrarMenuPedidos();
+        do{
+            vista.mostrarMensaje("-- GESTION DE PEDIDOS --");
+            vista.mostrarMensaje("1. Crear Pedido");
+            vista.mostrarMensaje("2. Mostrar Pedidos");
+            vista.mostrarMensaje("0. Volver al Menu Principal");
             opcion = vista.pedirOpcion();
-            switch (opcion) {
+
+            switch (opcion){
                 case 1:
-                    anadirPedido();
+                    crearPedido();
                     break;
                 case 2:
-                    eliminarPedido();
-                    break;
-                case 3:
-                    mostrarPedidosPendientes();
-                    break;
-                case 4:
-                    mostrarPedidosPendienteConFiltradoDeCliente();
-                    break;
-                case 5:
-                    mostrarPedidosEnviados();
-                    break;
-                case 6:
-                    mostrarPedidosEnviadosConFiltradoDeCliente();
+                    mostrarPedido();
                     break;
                 case 0:
-                    vista.mostrarMensaje("Volviendo al Menú Principal");
+                    vista.mostrarMensaje("Volviendo al Menú Princial");
                     break;
                 default:
-                    vista.mostrarError("Opción no válida.");
+                    vista.mostrarMensaje("Opcion no valida.");
                     break;
-
             }
-        } while (opcion != 0);
+        } while (opcion !=0);
     }
 
-    private void anadirPedido(){
-        Pedido nuevoPedido = null;
-        vista.mostrarMensaje("Introduce el email del cliente:");
-
+    private void crearPedido() {
+        vista.mostrarMensaje("Email del cliente: ");
         String email = vista.pedirString();
-        boolean clienteExiste = modelo.getClientes().containsKey(email);
-        Cliente clienteParaPedido = null;
 
-        if(clienteExiste){
-            clienteParaPedido = modelo.getClientes().get(email);
-            vista.mostrarMensaje("Cliente encontrado: " + clienteParaPedido.getEmail());
-            // Continuar con la creación del pedido...
+        vista.mostrarMensaje("Código del artículo: ");
+        String codigo = vista.pedirString();
+
+        vista.mostrarMensaje("Unidades: ");
+        int unidades = vista.pedirInt();
+
+        vista.mostrarMensaje("Gasto de envío: ");
+        double gastoEnvio = vista.pedirDouble();
+
+        vista.mostrarMensaje("Tiempo de preparación (min): ");
+        int tiempoPrep = vista.pedirInt();
+
+        Pedido nuevo = new Pedido(
+                0,  // número de pedido (autoincrement)
+                email,
+                codigo,
+                unidades,
+                java.time.LocalDateTime.now(),
+                gastoEnvio,
+                tiempoPrep
+        );
+
+        modelo.crearPedido(nuevo);
+    }
+
+    private void mostrarPedido() {
+        var pedidos = modelo.getPedidos();
+        if (pedidos.isEmpty()) {
+            vista.mostrarMensaje("No hay pedidos registrados.");
         } else {
-            vista.mostrarError("El cliente con email " + email + " no existe. No se puede crear el pedido.");
-            vista.mostrarMensaje("¿Desea crear un nuevo cliente con este email? (S/N)");
-            String respuesta = vista.pedirString();
-            if(respuesta.equalsIgnoreCase("S")){
-
-                anadirCliente(email);
-                Cliente clienteRecuperado = modelo.getClientes().get(email);
-                clienteParaPedido = clienteRecuperado;
-
-            } else {
-                vista.mostrarMensaje("Pedido no creado. Volviendo al menú de pedidos.");
-                return;
-            }
-        }
-
-        Articulo articuloParaPedido = null;
-        int numeroPedidoTemporal = 0;
-
-        vista.mostrarMensaje("Ahora, añade el codigo del artículo al pedido(El articulo debe existir).");
-        String codigoArticulo = vista.pedirString();
-        boolean articuloExiste = modelo.getArticulos().containsKey(codigoArticulo);
-        if (articuloExiste) {
-            articuloParaPedido = modelo.getArticulos().get(codigoArticulo);
-            vista.mostrarMensaje("Artículo encontrado: " + articuloParaPedido.getCodigo());
-        } else {
-            vista.mostrarError("El artículo con código " + codigoArticulo + " no existe. No se puede crear el pedido.");
-            return;
-        }
-        int numeroPedido = numeroPedidoTemporal;//esto porque se genera en el modelo(GestorDeDatos) en el metodo gerarNumeroPedido()
-        vista.mostrarMensaje("Cantidad:");
-        int cantidad = vista.pedirInt();
-        LocalDateTime fechaPedido = LocalDateTime.now();
-        double gastoEnvio = articuloParaPedido.getGastoEnvio() * (1-clienteParaPedido.descuentoEnvio());
-        int tiempoPreparacion = articuloParaPedido.getTiempoPreparacionMin();
-
-        nuevoPedido = new Pedido(clienteParaPedido, articuloParaPedido, numeroPedido, cantidad, fechaPedido, gastoEnvio, tiempoPreparacion);
-
-        modelo.crearPedido(nuevoPedido);
-        vista.mostrarMensaje("Pedido creado con exito.");
-
-
-    }
-
-    private void eliminarPedido(){
-        //System.out.println(modelo.getPedidos().toString());
-        vista.mostrarMensaje("Introduce el numero de pedido a eliminar:");
-        int numPedido = vista.pedirInt();
-
-        try{
-            String mensaje = modelo.eliminarPedido(numPedido);
-            vista.mostrarMensaje(mensaje);
-        } catch (com.code058.exceptions.PedidoNoCancelableException e){
-            vista.mostrarError(e.getMessage());
+            pedidos.forEach(p -> System.out.println(p.toString()));
         }
     }
-
-    private void mostrarPedidosPendientes(){
-        vista.mostrarPedidos(modelo.getPedidosPendientes());
-    }
-
-    private void mostrarPedidosPendienteConFiltradoDeCliente(){
-        vista.mostrarMensaje("Ingresa un email de cliente");
-        String email = vista.pedirString();
-        if (modelo.getPedidosPendientes().isEmpty()){
-            vista.mostrarMensaje("El cliente con el email:" + email + " no tiene pedidos enviados");
-        }else {
-            vista.mostrarPedidos(modelo.getPedidosPendientes(email));
-        }
-    }
-
-    private void mostrarPedidosEnviados(){
-        vista.mostrarPedidos(modelo.getPedidosEviados());
-    }
-
-    private void mostrarPedidosEnviadosConFiltradoDeCliente(){
-        vista.mostrarMensaje("Ingresa un email de cliente");
-        String email = vista.pedirString();
-        if (modelo.getPedidosEviados(email).isEmpty()){
-            vista.mostrarMensaje("El cliente con el email:" + email + " no tiene pedidos enviados");
-        }else {
-            vista.mostrarPedidos(modelo.getPedidosEviados(email));
-        }
-
-    }
-
-
 }
