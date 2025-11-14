@@ -9,166 +9,142 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.code058.model.dao.ArticuloDAO;
+import com.code058.model.dao.ClienteDAO;
+import com.code058.model.dao.PedidoDAO;
+import com.code058.model.factory.DAOFactory;
+
 public class GestorDeDatos {
 
-    // Uso de Genéricos: Map<Clave, Valor> y List<Elemento>
-    private Map<String, Cliente> clientes;
-    private Map<String, Articulo> articulos;
-    private List<Pedido> pedidos;
+    private ClienteDAO clienteDAO;
+    private ArticuloDAO articuloDAO;
+    private PedidoDAO pedidoDAO;
+
+
 
     public GestorDeDatos() {
-        // Inicialización de las estructuras de datos dinámicas
-        this.clientes = new HashMap<>(); // Diccionario
-        this.articulos = new HashMap<>(); // Diccionario
-        this.pedidos = new ArrayList<>(); // Lista
 
-        // Opcional: Cargar datos de prueba para empezar a probar la aplicación
-        cargarDatosIniciales();
+        this.clienteDAO = DAOFactory.getClienteDAO();
+        this.articuloDAO = DAOFactory.getArticuloDAO();
+        this.pedidoDAO = DAOFactory.getPedidoDAO();
+        // Inicialización de las estructuras de datos dinámicas
+
+
+
     }
 
     //Gestión artículos
-    public void anadirArticulo(Articulo articulo) throws DuplicadosException{
-        if (this.articulos.containsKey(articulo.getCodigo())) {
-            throw new DuplicadosException("Error de negocio: El artículo con código " + articulo.getCodigo() + " ya existe.");
+    public void anadirArticulo(Articulo articulo) throws Exception {
+        try {
+            // La BBDD (DAO) ahora maneja la lógica de inserción y la verificación de duplicados (PK).
+            articuloDAO.insertar(articulo);
+        } catch (Exception e) {
+            // Capturamos el error del DAO. Si falla por PK duplicada, el mensaje SQL lo indicará.
+            throw new Exception("Error al añadir artículo en la BBDD. Causa: " + e.getMessage());
         }
-        this.articulos.put(articulo.getCodigo(), articulo);
     }
 
-    public Map<String, Articulo> getArticulos() {
-        return this.articulos;
+    public Articulo getArticulo(String codigo) throws Exception {
+        return articuloDAO.obtenerPorCodigo(codigo);
+    }
+    public java.util.List<Articulo> getArticulos() throws Exception {
+        return articuloDAO.obtenerTodos();
     }
 
 
     //Gestión cliente
-    public void anadirCliente(Cliente cliente) throws DuplicadosException{
-        if(this.clientes.containsKey((cliente.getEmail()))){
-            throw new DuplicadosException(("El cliente con el email " + cliente.getEmail()) + " ya existe");
+    public void anadirCliente(Cliente cliente) throws Exception {
+        try {
+            clienteDAO.insertar(cliente); // Llama al metodo transaccional del DAO
+        } catch (Exception e) {
+            // El DAO ya maneja las excepciones SQL, pero las relanzamos
+            // para que el Controlador pueda informar a la Vista.
+            throw new Exception("Error al añadir cliente en la BBDD: " + e.getMessage());
         }
-        this.clientes.put(cliente.getEmail(), cliente);
     }
 
-    public Map<String, Cliente> getClientes(){ return  this.clientes; }
-
-    public List<Cliente> getClientesEstandar(){
-        List<Cliente> lista = new ArrayList<>();
-        for(Cliente c : clientes.values()){
-            if( c instanceof ClienteEstandar) lista.add(c);
+    public Cliente getCliente(String email) throws Exception {
+        try {
+            // Llama al metodo obtenerPorEmail del DAO
+            return clienteDAO.obtenerPorEmail(email);
+        } catch (Exception e) {
+            throw new Exception("Error al buscar cliente por email en la BBDD: " + e.getMessage());
         }
-        return lista;
     }
-    public List<Cliente> getClientesPremium(){
-        List<Cliente> lista = new ArrayList<>();
-        for(Cliente c : clientes.values()){
-            if( c instanceof ClientePremium) lista.add(c);
+
+    public List<Cliente> getClientes() throws Exception {
+        try {
+            // Llama al metodo obtenerPorEmail del DAO
+            return clienteDAO.obtenerTodos();
+        } catch (Exception e) {
+            throw new Exception("Error al buscar clientes en la BBDD: " + e.getMessage());
         }
-        return lista;
+    }
+
+    public List<Cliente> getClientesEstandar() throws Exception {
+        try {
+            // Llama al DAO, que ya hace el SELECT WHERE tipo_cliente = 'ESTANDAR'
+            return clienteDAO.obtenerEstandar();
+        } catch (Exception e) {
+            throw new Exception("Error al obtener clientes Estándar: " + e.getMessage());
+        }
+    }
+    public List<Cliente> getClientesPremium() throws Exception {
+        try {
+            // Llama al DAO, que ya hace el SELECT WHERE tipo_cliente = 'PREMIUM'
+            return clienteDAO.obtenerPremium();
+        } catch (Exception e) {
+            throw new Exception("Error al obtener clientes Premium: " + e.getMessage());
+        }
     }
 
 
     //Gestión pedidos
-    public void crearPedido(Pedido pedido){
-        pedido.setNumeroPedido(generarNumeroPedido());
-        this.pedidos.add(pedido);
-    }
-
-    private int generarNumeroPedido(){
-        if (pedidos.isEmpty()){
-            return 1;
+    public void crearPedido(Pedido pedido) throws Exception {
+        try {
+            pedidoDAO.insertar(pedido);
+        } catch (Exception e) {
+            throw new Exception("Error al crear el pedido en la BBDD. Causa: " + e.getMessage());
         }
-        Pedido ultimoPedido = pedidos.get(pedidos.size() - 1);
-        return ultimoPedido.getNumeroPedido() + 1;
     }
 
-    public String eliminarPedido(int numPedido) throws PedidoNoCancelableException{
-        for(int i = 0; i < pedidos.size(); i++){
-            Pedido p = pedidos.get(i);
+//    private int generarNumeroPedido(){
+//        if (pedidos.isEmpty()){
+//            return 1;
+//        }
+//        Pedido ultimoPedido = pedidos.get(pedidos.size() - 1);
+//        return ultimoPedido.getNumeroPedido() + 1;
+//    }
 
-            if( p.getNumeroPedido() == numPedido){
-                if(!p.esCancelable()){
-                    throw new PedidoNoCancelableException("El pedido " + numPedido + " no puede cancelarse (ya se ha enviado)");
-                }
-
-                pedidos.remove(i);
-                return "PEDIDO_ELIMINADO";
+    public String eliminarPedido(int numPedido) throws Exception {
+        try {
+            pedidoDAO.eliminar(numPedido);
+            return "PEDIDO_ELIMINADO";
+        } catch (PedidoNoCancelableException e) {
+            throw e;
+        } catch (Exception e) {
+            // Capturamos cualquier error de SQL/No encontrado.
+            if (e.getMessage().contains("no encontrado") || e.getMessage().contains("no existe")) {
+                return "PEDIDO_NO_ENCONTRADO";
             }
+            throw new Exception("Error al eliminar pedido en la BBDD. Causa: " + e.getMessage());
         }
-        return "PEDIDO_NO_ENCONTRADO";
     }
 
-    public List<Pedido> getPedidos() {
-        return this.pedidos;
+    public List<Pedido> getPedidosPendientes() throws Exception {
+        return pedidoDAO.obtenerPendientes(null); // Asume que el DAO filtra por NULL si no hay email
     }
 
-    public List<Pedido> getPedidosPendientes(String emailCliente){
-        List<Pedido> resultado = new ArrayList<>();
-        for(Pedido p : pedidos){
-            boolean pendiente = p.esCancelable();
-            boolean coincide = (emailCliente == null) || p.getCliente().getEmail().equalsIgnoreCase(emailCliente);
-            if(pendiente && coincide){
-                resultado.add(p);
-            }
-        }
-        return resultado;
+    public List<Pedido> getPedidosPendientes(String emailCliente) throws Exception {
+        return pedidoDAO.obtenerPendientes(emailCliente);
     }
 
-    public List<Pedido> getPedidosPendientes(){
-        List<Pedido> resultado = new ArrayList<>();
-        for(Pedido p : pedidos){
-            boolean pendiente = p.esCancelable();
-            if(pendiente){
-                resultado.add(p);
-            }
-        }
-        return resultado;
+    public List<Pedido> getPedidosEviados() throws Exception {
+        return pedidoDAO.obtenerEnviados(null);
     }
 
-    public List<Pedido> getPedidosEviados(String emailCliente){
-        List<Pedido> resultado = new ArrayList<>();
-        for(Pedido p : pedidos){
-            boolean pendiente = !p.esCancelable();
-            boolean coincide = (emailCliente == null) || p.getCliente().getEmail().equalsIgnoreCase(emailCliente);
-            if(pendiente && coincide){
-                resultado.add(p);
-            }
-        }
-
-        return resultado;
-    }
-
-    public List<Pedido> getPedidosEviados(){
-        List<Pedido> resultado = new ArrayList<>();
-        for(Pedido p : pedidos){
-            boolean pendiente = !p.esCancelable();
-            if (pendiente){
-                resultado.add(p);
-            }
-
-        }
-        return resultado;
-    }
-
-
-    //Datos prueba
-    private void cargarDatosIniciales() {
-
-//        ClientePremium cp = new ClientePremium("asd", "Calle padilla 123", "X1234567Z", "asd@asd.com");
-//
-//        this.clientes.put(cp.getEmail(), cp);
-//
-//        ClienteEstandar cp1 = new ClienteEstandar("qwe", "Calle padilla 123", "X1324567Z", "qwe@qwe.com");
-//        this.clientes.put(cp1.getEmail(), cp1);
-//
-//        Articulo a1 = new Articulo("asd1", "Laptop de 15 pulg.", 800.0, 10.0, 1);
-//        this.articulos.put(a1.getCodigo(), a1);
-//
-//        Articulo a2 = new Articulo("asd2", "Laptop de 15 pulg.", 800.0, 10.0, 5);
-//        this.articulos.put(a2.getCodigo(), a2);
-//
-//        Pedido p1 = new Pedido(cp, a1, 1, 1, LocalDateTime.of(2025,10,26,13,23,0), 15.0, 5);
-//        this.pedidos.add(p1);
-//
-//        Pedido p2 = new Pedido(cp1, a1 , 2, 3,LocalDateTime.now(), 20, 60);
-//        this.pedidos.add(p2);
+    public List<Pedido> getPedidosEviados(String emailCliente) throws Exception {
+        return pedidoDAO.obtenerEnviados(emailCliente);
     }
 
 }

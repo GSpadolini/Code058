@@ -96,15 +96,28 @@ public class VistaConsola {
         System.out.println("2. Mostrat Articulo");
         System.out.println("0. Ir al menu principal");
     }
-    public void imprimirListaArticulos(Map<String, Articulo> articulos) {
-        articulos.forEach((codigo, articulo) ->
-                System.out.println("Codigo del Articulo: " + codigo + ", " + articulo)
+    public void imprimirListaArticulos(java.util.List<Articulo> articulos) {
+        System.out.println("\nLISTA DE ARTÍCULOS:");
+
+        articulos.forEach(articulo ->
+                System.out.println(
+                        "Código: " + articulo.getCodigo() +
+                                ", Descripción: " + articulo.getDescripcion() +
+                                ", Precio: " + articulo.getPrecioVenta()
+                )
         );
     }
 
-    public void imprimirListaClientes(Map<String, Cliente> clientes){
-        clientes.forEach((email,cliente) ->
-                System.out.println("Email " + email + ", " + cliente));
+    public void imprimirListaClientes(java.util.List<Cliente> clientes) {
+        System.out.println("\nLISTA DE CLIENTES:");
+
+        clientes.forEach(cliente ->
+                System.out.println(
+                        "Email: " +  cliente.getEmail() +
+                                ", Nombre: " + cliente.getNombre() +
+                                ", NIF: " + cliente.getNif()
+                )
+        );
     }
 
     public void imprimirListaClientesFiltrados(List<Cliente> lista){

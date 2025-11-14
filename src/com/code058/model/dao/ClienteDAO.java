@@ -16,4 +16,6 @@ public interface ClienteDAO {
     public List<Cliente> obtenerEstandar() throws Exception;
     public List<Cliente> obtenerPremium() throws Exception;
 
+    public Cliente obtenerPorEmail(String email) throws Exception;
+
 }

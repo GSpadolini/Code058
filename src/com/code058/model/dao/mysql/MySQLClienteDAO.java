@@ -31,6 +31,9 @@ public class MySQLClienteDAO implements ClienteDAO {
     private static final String SELECT_PREMIUM_SQL =
             "SELECT * FROM cliente WHERE tipo_cliente = 'PREMIUM'";
 
+    private static final String SELECT_BY_PK_SQL =
+            "SELECT email, nombre, domicilio, nif, tipo_cliente, cuota_anual, descuento_envio FROM cliente WHERE email = ?";
+
     private Cliente mapearCliente(ResultSet rs) throws SQLException {
 
         String tipo = rs.getString("tipo_cliente");
@@ -154,6 +157,28 @@ public class MySQLClienteDAO implements ClienteDAO {
             throw new Exception("Error DAO al obtener clientes premium: " + e.getMessage(), e);
         }
         return clientes;
+    }
+
+    @Override
+    public Cliente obtenerPorEmail(String email) throws Exception {
+        Cliente cliente = null;
+
+        try (Connection conn = DBConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SELECT_BY_PK_SQL)) {
+
+            ps.setString(1, email);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    // Usamos el metodo de mapeo que se encarga de instanciar la subclase correcta
+                    cliente = mapearCliente(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw new Exception("Error DAO al obtener cliente por email: " + e.getMessage(), e);
+        }
+
+        return cliente;
     }
 
 }

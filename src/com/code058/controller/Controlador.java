@@ -5,7 +5,7 @@ import com.code058.model.*;
 import com.code058.view.VistaConsola;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
 public class Controlador {
     // El Controlador tiene referencias a ambas capas
@@ -19,24 +19,23 @@ public class Controlador {
     }
 
     // El metodo de arranque que pide la App.java
-    public void iniciar() throws DuplicadosException {
+    public void iniciar(){
 
             int opcion;
+        try {
             do {
                 vista.mostrarMenuPrincipal();
-                // 1. Pide a la VISTA que muestre el menú y devuelva la opción
                 opcion = vista.pedirOpcion();
 
-                // 2. Ejecuta la lógica según la opción
                 switch (opcion) {
                     case 1:
                         gestionarArticulos();
                         break;
                     case 2:
-                        gestionarClientes(); // Por hacer
+                        gestionarClientes();
                         break;
                     case 3:
-                        gestionarPedidos(); // Por hacer
+                        gestionarPedidos();
                         break;
                     case 0:
                         vista.mostrarMensaje("Saliendo de la aplicación. ¡Hasta pronto!");
@@ -46,6 +45,10 @@ public class Controlador {
                         break;
                 }
             } while (opcion != 0);
+        } catch (Exception e) {
+            vista.mostrarError("ERROR CRÍTICO DEL SISTEMA: " + e.getMessage());
+            System.exit(1);
+        }
     }
 
     // Artículos
@@ -68,15 +71,20 @@ public class Controlador {
         try{
             modelo.anadirArticulo(nuevoArticulo);
             vista.mostrarMensaje("Artículo " + codigo + " añadido con éxito.");
-        }catch (com.code058.exceptions.DuplicadosException e){
-            vista.mostrarError(e.getMessage());
+        }catch (Exception e){
+            vista.mostrarError("ERROR al añadir artículo en la BBDD: " + e.getMessage());
         }
 
     }
 
     private void mostrarArticulos(){
-        Map<String, Articulo> articulos = modelo.getArticulos();
-        vista.imprimirListaArticulos(articulos);
+        try {
+            // CORREGIDO: Ahora devuelve List<Articulo> y debe manejar la excepción.
+            java.util.List<Articulo> articulos = modelo.getArticulos();
+            vista.imprimirListaArticulos(articulos); // Asume que la vista acepta List
+        } catch (Exception e) {
+            vista.mostrarError("ERROR al listar artículos: " + e.getMessage());
+        }
     }
 
     private void gestionarArticulos() {
@@ -167,7 +175,7 @@ public class Controlador {
         try{
             modelo.anadirCliente(nuevo);
             vista.mostrarMensaje("Cliente " + email + " añadido con éxito.");
-        }catch (com.code058.exceptions.DuplicadosException e){
+        }catch (Exception e){
             vista.mostrarError(e.getMessage()); // La maneja y usa la VISTA para el error
         }
     }
@@ -198,25 +206,39 @@ public class Controlador {
         } while (tipo != 1 && tipo != 2);
 
 
-        try{
+        try {
+            // Llama al Modelo, que delega al ClienteDAO.insertar()
             modelo.anadirCliente(nuevo);
-            vista.mostrarMensaje("Cliente " + email + " añadido con éxito.");
-        }catch (com.code058.exceptions.DuplicadosException e){
-            vista.mostrarError(e.getMessage()); // La maneja y usa la VISTA para el error
+            vista.mostrarMensaje("Cliente " + nuevo.getEmail() + " añadido con éxito.");
+        } catch (Exception e) { // <-- CORREGIDO: Capturar la excepción genérica
+            // Esto captura tanto los errores de SQL (duplicados de PK) como errores de conexión.
+            vista.mostrarError("ERROR al añadir cliente en la BBDD. Causa: " + e.getMessage());
         }
     }
 
     private void mostrarClientes(){
-        Map<String, Cliente> clientes = modelo.getClientes();
-        vista.imprimirListaClientes(clientes);
+        try {
+            java.util.List<Cliente> clientes = modelo.getClientes();
+            vista.imprimirListaClientes(clientes);
+        } catch (Exception e) {
+            vista.mostrarError("ERROR al listar todos los clientes desde la BBDD: " + e.getMessage());
+        }
     }
 
     private void mostrarClientesEstandar(){
-        vista.imprimirListaClientesFiltrados(modelo.getClientesEstandar());
+        try {
+            vista.imprimirListaClientesFiltrados(modelo.getClientesEstandar());
+        } catch (Exception e) {
+            vista.mostrarError("ERROR al listar clientes Estándar desde la BBDD: " + e.getMessage());
+        }
     }
 
     private void mostrarClientesPremium(){
-        vista.imprimirListaClientesFiltrados(modelo.getClientesPremium());
+        try {
+            vista.imprimirListaClientesFiltrados(modelo.getClientesPremium());
+        } catch (Exception e) {
+            vista.mostrarError("ERROR al listar clientes Premium desde la BBDD: " + e.getMessage());
+        }
     }
 
     private void gestionarPedidos() {
@@ -258,61 +280,56 @@ public class Controlador {
     private void anadirPedido(){
         Pedido nuevoPedido = null;
         vista.mostrarMensaje("Introduce el email del cliente:");
-
         String email = vista.pedirString();
-        boolean clienteExiste = modelo.getClientes().containsKey(email);
         Cliente clienteParaPedido = null;
 
-        if(clienteExiste){
-            clienteParaPedido = modelo.getClientes().get(email);
-            vista.mostrarMensaje("Cliente encontrado: " + clienteParaPedido.getEmail());
-            // Continuar con la creación del pedido...
-        } else {
-            vista.mostrarError("El cliente con email " + email + " no existe. No se puede crear el pedido.");
-            vista.mostrarMensaje("¿Desea crear un nuevo cliente con este email? (S/N)");
-            String respuesta = vista.pedirString();
-            if(respuesta.equalsIgnoreCase("S")){
+        try {
+            clienteParaPedido = modelo.getCliente(email);
 
-                anadirCliente(email);
-                Cliente clienteRecuperado = modelo.getClientes().get(email);
-                clienteParaPedido = clienteRecuperado;
-
+            if (clienteParaPedido != null){
+                vista.mostrarMensaje("Cliente encontrado: " + clienteParaPedido.getEmail());
             } else {
-                vista.mostrarMensaje("Pedido no creado. Volviendo al menú de pedidos.");
-                return;
+                vista.mostrarError("El cliente con email " + email + " no existe.");
+                vista.mostrarMensaje("¿Desea crear un nuevo cliente con este email? (S/N)");
+                String respuesta = vista.pedirString();
+
+                if(respuesta.equalsIgnoreCase("S")){
+                    anadirCliente(email);
+                    clienteParaPedido = modelo.getCliente(email);
+                } else {
+                    vista.mostrarMensaje("Pedido no creado. Volviendo al menú de pedidos.");
+                    return;
+                }
             }
-        }
+            vista.mostrarMensaje("Ahora, añade el codigo del artículo al pedido(El articulo debe existir).");
+            String codigoArticulo = vista.pedirString();
+            Articulo articuloParaPedido = modelo.getArticulo(codigoArticulo);
 
-        Articulo articuloParaPedido = null;
-        int numeroPedidoTemporal = 0;
-
-        vista.mostrarMensaje("Ahora, añade el codigo del artículo al pedido(El articulo debe existir).");
-        String codigoArticulo = vista.pedirString();
-        boolean articuloExiste = modelo.getArticulos().containsKey(codigoArticulo);
-        if (articuloExiste) {
-                articuloParaPedido = modelo.getArticulos().get(codigoArticulo);
+            if (articuloParaPedido != null) {
                 vista.mostrarMensaje("Artículo encontrado: " + articuloParaPedido.getCodigo());
-        } else {
+            } else {
                 vista.mostrarError("El artículo con código " + codigoArticulo + " no existe. No se puede crear el pedido.");
                 return;
+            }
+
+            int numeroPedido = 0;// Para que la BBDD lo ignore y lo genere automaticamente
+            vista.mostrarMensaje("Cantidad:");
+            int cantidad = vista.pedirInt();
+            LocalDateTime fechaPedido = LocalDateTime.now();
+            double gastoEnvio = articuloParaPedido.getGastoEnvio() * (1-clienteParaPedido.descuentoEnvio());
+            int tiempoPreparacion = articuloParaPedido.getTiempoPreparacionMin();
+
+            nuevoPedido = new Pedido(clienteParaPedido, articuloParaPedido, numeroPedido, cantidad, fechaPedido, gastoEnvio, tiempoPreparacion);
+
+            modelo.crearPedido(nuevoPedido);
+            vista.mostrarMensaje("Pedido creado con exito.");
+
+        } catch (Exception e) { // <<-- CAPTURAR CUALQUIER ERROR DE BBDD/DAO
+            vista.mostrarError("ERROR al procesar el pedido o en la BBDD: " + e.getMessage());
         }
-        int numeroPedido = numeroPedidoTemporal;//esto porque se genera en el modelo(GestorDeDatos) en el metodo gerarNumeroPedido()
-        vista.mostrarMensaje("Cantidad:");
-        int cantidad = vista.pedirInt();
-        LocalDateTime fechaPedido = LocalDateTime.now();
-        double gastoEnvio = articuloParaPedido.getGastoEnvio() * (1-clienteParaPedido.descuentoEnvio());
-        int tiempoPreparacion = articuloParaPedido.getTiempoPreparacionMin();
-
-        nuevoPedido = new Pedido(clienteParaPedido, articuloParaPedido, numeroPedido, cantidad, fechaPedido, gastoEnvio, tiempoPreparacion);
-
-        modelo.crearPedido(nuevoPedido);
-        vista.mostrarMensaje("Pedido creado con exito.");
-
-
     }
 
     private void eliminarPedido(){
-        //System.out.println(modelo.getPedidos().toString());
         vista.mostrarMensaje("Introduce el numero de pedido a eliminar:");
         int numPedido = vista.pedirInt();
 
@@ -321,34 +338,56 @@ public class Controlador {
             vista.mostrarMensaje(mensaje);
         } catch (com.code058.exceptions.PedidoNoCancelableException e){
             vista.mostrarError(e.getMessage());
+        } catch (Exception e){
+            vista.mostrarError("ERROR al intentar eliminar el pedido: " + e.getMessage());
         }
     }
 
     private void mostrarPedidosPendientes(){
-        vista.mostrarPedidos(modelo.getPedidosPendientes());
+        try {
+            vista.mostrarPedidos(modelo.getPedidosPendientes());
+        } catch (Exception e) {
+            vista.mostrarError("ERROR al listar pedidos pendientes: " + e.getMessage());
+        }
     }
 
     private void mostrarPedidosPendienteConFiltradoDeCliente(){
         vista.mostrarMensaje("Ingresa un email de cliente");
         String email = vista.pedirString();
-        if (modelo.getPedidosPendientes().isEmpty()){
-            vista.mostrarMensaje("El cliente con el email:" + email + " no tiene pedidos enviados");
-        }else {
-            vista.mostrarPedidos(modelo.getPedidosPendientes(email));
+        try {
+            List<Pedido> pedidos = modelo.getPedidosPendientes(email);
+
+            if (pedidos.isEmpty()){
+                vista.mostrarMensaje("El cliente con el email:" + email + " no tiene pedidos pendientes");
+            }else {
+                vista.mostrarPedidos(pedidos);
+            }
+        } catch (Exception e) {
+            vista.mostrarError("ERROR al listar pedidos pendientes por cliente: " + e.getMessage());
         }
     }
 
     private void mostrarPedidosEnviados(){
-        vista.mostrarPedidos(modelo.getPedidosEviados());
+        try {
+            vista.mostrarPedidos(modelo.getPedidosEviados());
+        } catch (Exception e) {
+            vista.mostrarError("ERROR al listar pedidos enviados: " + e.getMessage());
+        }
     }
 
     private void mostrarPedidosEnviadosConFiltradoDeCliente(){
         vista.mostrarMensaje("Ingresa un email de cliente");
         String email = vista.pedirString();
-        if (modelo.getPedidosEviados(email).isEmpty()){
-            vista.mostrarMensaje("El cliente con el email:" + email + " no tiene pedidos enviados");
-        }else {
-            vista.mostrarPedidos(modelo.getPedidosEviados(email));
+        try {
+            List<Pedido> pedidos = modelo.getPedidosEviados(email);
+
+            if (pedidos.isEmpty()){
+                vista.mostrarMensaje("El cliente con el email:" + email + " no tiene pedidos enviados");
+            }else {
+                vista.mostrarPedidos(pedidos);
+            }
+        } catch (Exception e) {
+            vista.mostrarError("ERROR al listar pedidos enviados por cliente: " + e.getMessage());
         }
 
     }
