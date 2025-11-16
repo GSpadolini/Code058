@@ -89,7 +89,7 @@ public class VistaConsola {
         System.out.println("Menu Gestion de Articulo");
         System.out.println("Elige una opcion");
         System.out.println("1. Añadir Articulo");
-        System.out.println("2. Mostrat Articulo");
+        System.out.println("2. Mostrar Articulo");
         System.out.println("0. Ir al menu principal");
     }
 
@@ -134,7 +134,7 @@ public class VistaConsola {
 
     public void imprimirListaClientes(Map<String, Cliente> clientes){
         if (clientes == null || clientes.isEmpty()) {
-            System.out.println("No hay clientes (map).");
+            System.out.println("No hay clientes (map).\n");
             return;
         }
         System.out.println("=== MAP CLIENTES ===");
@@ -144,7 +144,7 @@ public class VistaConsola {
 
     public void imprimirListaClientesFiltrados(List<Cliente> lista){
         if(lista == null || lista.isEmpty()){
-            System.out.println("No hay clientes en esta categoría");
+            System.out.println("No hay clientes en esta categoría\n");
         } else {
             lista.forEach(c -> System.out.println(c.toString()));
         }
@@ -165,7 +165,7 @@ public class VistaConsola {
         System.out.println("Elige una opcion");
         System.out.println("1. Crear Pedido");
         System.out.println("2. Eliminar Pedido");
-        System.out.println("3. Mostrar Todos los Pedidos Pendientes");
+        System.out.println("3. Mostrar todos los Pedidos Pendientes");
         System.out.println("4. Mostrar los Pedidos Pendientes filtrados por Cliente");
         System.out.println("5. Mostrar Pedidos Completados");
         System.out.println("6. Mostrar Pedidos Completados filtrados por Cliente");
@@ -174,7 +174,7 @@ public class VistaConsola {
 
     public void imprimirListaPedidos(List<Pedido> pedidos) {
         if (pedidos == null || pedidos.isEmpty()) {
-            System.out.println("No hay pedidos para mostrar.");
+            System.out.println("No hay pedidos para mostrar.\n");
             return;
         }
 

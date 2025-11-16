@@ -34,10 +34,10 @@ public class Controlador {
                         gestionarArticulos();
                         break;
                     case 2:
-                        gestionarClientes(); // Por hacer
+                        gestionarClientes();
                         break;
                     case 3:
-                        gestionarPedidos(); // Por hacer
+                        gestionarPedidos();
                         break;
                     case 0:
                         vista.mostrarMensaje("Saliendo de la aplicación. ¡Hasta pronto!");
@@ -240,10 +240,10 @@ public class Controlador {
                     mostrarPedidosPendienteConFiltradoDeCliente();
                     break;
                 case 5:
-                    //mostrarPedidosEnviados();
+                    mostrarPedidosEnviados();
                     break;
                 case 6:
-                    //mostrarPedidosEnviadosConFiltradoDeCliente();
+                    mostrarPedidosEnviadosConFiltradoDeCliente();
                     break;
                 case 0:
                     vista.mostrarMensaje("Volviendo al Menú Principal");
@@ -433,6 +433,37 @@ public class Controlador {
 
         // Mostramos la lista
         vista.imprimirListaPedidos(pedidosPendientes);
+    }
+
+    private void mostrarPedidosEnviados() {
+        vista.mostrarMensaje("=== Todos los Pedidos Completados ===");
+        try {
+            List<Pedido> pedidos = modelo.getPedidosEnviados(null); // delega al GestorDeDatos
+            if (pedidos == null || pedidos.isEmpty()) {
+                vista.mostrarMensaje("No hay pedidos completados.");
+            } else {
+                vista.imprimirListaPedidos(pedidos);
+            }
+        } catch (RuntimeException e) {
+            // Mostrar stacktrace solo en debug; aquí mostramos el mensaje de error
+            vista.mostrarError("Error mostrando pedidos completados: " + e.getMessage());
+        }
+    }
+
+    private void mostrarPedidosEnviadosConFiltradoDeCliente() {
+        vista.mostrarMensaje("=== Pedidos Completados Filtrados por Cliente ===");
+        vista.mostrarMensaje("Introduce el email del cliente:");
+        String email = vista.pedirString();
+        try {
+            List<Pedido> pedidos = modelo.getPedidosEnviados(email);
+            if (pedidos == null || pedidos.isEmpty()) {
+                vista.mostrarMensaje("No hay pedidos completados para el cliente " + email + ".");
+            } else {
+                vista.imprimirListaPedidos(pedidos);
+            }
+        } catch (RuntimeException e) {
+            vista.mostrarError("Error mostrando pedidos completados para " + email + ": " + e.getMessage());
+        }
     }
 
 

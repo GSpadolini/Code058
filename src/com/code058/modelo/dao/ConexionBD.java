@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexionBD {
-    private static final String URL = "jdbc:mysql://localhost:3306/online_store_db?serverTimezone=UTC";
+    private static final String URL = "jdbc:mysql://localhost:3306/online_store_db?serverTimezone=Europe/Madrid";
     private static final String USER = "root";
     private static final String PASSWORD = "C4mbiami!";
 
