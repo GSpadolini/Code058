@@ -10,7 +10,6 @@ public class App {
     public static void main(String[] args) throws DuplicadosException {
         // --- PASO 1: Creación de instancias del Modelo ---
         // El Modelo es la lógica de negocio y donde viven los datos.
-        // Vamos a asumir que tienes una clase central para gestionar todo.
         GestorDeDatos modelo = new GestorDeDatos();
 
         // --- PASO 2: Creación de la Vista ---

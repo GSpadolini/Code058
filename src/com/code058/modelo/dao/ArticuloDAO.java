@@ -1,20 +1,48 @@
+// --- file: com/code058/modelo/dao/ArticuloDAO.java ---
 package com.code058.modelo.dao;
 
 import com.code058.model.Articulo;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-public class ArticuloDAO {
-    // obtener todos
+public class ArticuloDAO implements IArticuloDAO {
+
+    // === métodos que abren/cierran la conexión  ===
+    @Override
     public List<Articulo> obtenerTodos() throws SQLException {
+        try (Connection c = ConexionBD.getConnection()) {
+            return obtenerTodos(c);
+        }
+    }
+
+    @Override
+    public void insertar(Articulo a) throws SQLException {
+        try (Connection c = ConexionBD.getConnection()) {
+            insertar(c, a);
+        }
+    }
+
+    @Override
+    public Articulo obtenerPorCodigo(String codigo) throws SQLException {
+        try (Connection c = ConexionBD.getConnection()) {
+            return obtenerPorCodigo(c, codigo);
+        }
+    }
+
+    @Override
+    public boolean existeCodigo(String codigo) throws SQLException {
+        try (Connection c = ConexionBD.getConnection()) {
+            return existeCodigo(c, codigo);
+        }
+    }
+
+    // === versiones que usan Connection externa (para transacciones) ===
+    @Override
+    public List<Articulo> obtenerTodos(Connection c) throws SQLException {
         List<Articulo> lista = new ArrayList<>();
         String sql = "SELECT codigo, descripcion, precio_venta, gastos_envio, tiempo_preparacion_min FROM articulo";
-        try (Connection c = ConexionBD.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql);
+        try (PreparedStatement ps = c.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Articulo a = new Articulo(
@@ -30,11 +58,10 @@ public class ArticuloDAO {
         return lista;
     }
 
-    // insertar
-    public void insertar(Articulo a) throws SQLException {
+    @Override
+    public void insertar(Connection c, Articulo a) throws SQLException {
         String sql = "INSERT INTO articulo (codigo, descripcion, precio_venta, gastos_envio, tiempo_preparacion_min) VALUES (?, ?, ?, ?, ?)";
-        try (Connection c = ConexionBD.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, a.getCodigo());
             ps.setString(2, a.getDescripcion());
             ps.setDouble(3, a.getPrecioVenta());
@@ -44,11 +71,10 @@ public class ArticuloDAO {
         }
     }
 
-    // obtenerPorCodigo
-    public Articulo obtenerPorCodigo(String codigo) throws SQLException {
+    @Override
+    public Articulo obtenerPorCodigo(Connection c, String codigo) throws SQLException {
         String sql = "SELECT codigo, descripcion, precio_venta, gastos_envio, tiempo_preparacion_min FROM articulo WHERE codigo = ?";
-        try (Connection c = ConexionBD.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -65,11 +91,10 @@ public class ArticuloDAO {
         }
     }
 
-    // existeCodigo
-    public boolean existeCodigo(String codigo) throws SQLException {
+    @Override
+    public boolean existeCodigo(Connection c, String codigo) throws SQLException {
         String sql = "SELECT 1 FROM articulo WHERE codigo = ? LIMIT 1";
-        try (Connection c = ConexionBD.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();

@@ -115,14 +115,6 @@ public class GestorDeDatos {
         }
     }
 
-    public List<Pedido> getPedidosEviados(String emailCliente) { // si quieres corrige a getPedidosEnviados
-        try {
-            return pedidoDAO.obtenerEnviados(emailCliente);
-        } catch (SQLException e) {
-            throw new RuntimeException("Error leyendo pedidos enviados", e);
-        }
-    }
-
     public List<Pedido> getPedidosEnviados(String emailCliente) {
         try {
             return pedidoDAO.obtenerEnviados(emailCliente);
