@@ -11,7 +11,9 @@ public interface PedidoDAO {
 
     // Métodos para listar (que ya veremos cómo implementar)
     public List<Pedido> obtenerPendientes(String emailCliente) throws Exception;
+    public List<Pedido> obtenerPendientes() throws Exception;
     public List<Pedido> obtenerEnviados(String emailCliente) throws Exception;
+    public List<Pedido> obtenerEnviados() throws Exception;
 
     // Método para eliminar
     public void eliminar(int numeroPedido) throws Exception;

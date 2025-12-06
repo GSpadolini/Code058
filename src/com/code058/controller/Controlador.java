@@ -164,10 +164,10 @@ public class Controlador {
                 tipo = vista.pedirInt();
             }
             if(tipo == 2){
-                nuevo = new ClientePremium(nombre, domicilio, nif, email);
+                nuevo = new ClientePremium(email, nombre, domicilio, nif);
             }
             if (tipo == 1){
-                nuevo = new ClienteEstandar(nombre, domicilio, nif, email);
+                nuevo = new ClienteEstandar(email, nombre, domicilio, nif);
             }
         } while (tipo != 1 && tipo != 2);
 
@@ -198,10 +198,10 @@ public class Controlador {
                 tipo = vista.pedirInt();
             }
             if(tipo == 2){
-                nuevo = new ClientePremium(nombre, domicilio, nif, email);
+                nuevo = new ClientePremium(email, nombre, domicilio, nif);
             }
             if (tipo == 1){
-                nuevo = new ClienteEstandar(nombre, domicilio, nif, email);
+                nuevo = new ClienteEstandar(email, nombre, domicilio, nif);
             }
         } while (tipo != 1 && tipo != 2);
 
@@ -312,14 +312,13 @@ public class Controlador {
                 return;
             }
 
-            int numeroPedido = 0;// Para que la BBDD lo ignore y lo genere automaticamente
             vista.mostrarMensaje("Cantidad:");
             int cantidad = vista.pedirInt();
             LocalDateTime fechaPedido = LocalDateTime.now();
             double gastoEnvio = articuloParaPedido.getGastoEnvio() * (1-clienteParaPedido.descuentoEnvio());
             int tiempoPreparacion = articuloParaPedido.getTiempoPreparacionMin();
 
-            nuevoPedido = new Pedido(clienteParaPedido, articuloParaPedido, numeroPedido, cantidad, fechaPedido, gastoEnvio, tiempoPreparacion);
+            nuevoPedido = new Pedido(clienteParaPedido, articuloParaPedido, cantidad, fechaPedido, gastoEnvio, tiempoPreparacion);
 
             modelo.crearPedido(nuevoPedido);
             vista.mostrarMensaje("Pedido creado con exito.");

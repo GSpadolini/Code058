@@ -1,8 +1,12 @@
 package com.code058.model;
 
-public class ClientePremium extends Cliente{
+import javax.persistence.*;
 
-    private double cuotaAnual;
+@Entity
+@DiscriminatorValue("PREMIUM")
+public class ClientePremium extends Cliente{
+    @Column(name = "cuota_anual")
+    private Double cuotaAnual;
 
     public ClientePremium(String email, String nombre, String domicilio, String nif, double cuotaAnual) {
         super(email, nombre, domicilio, nif); // LLAMA AL CONSTRUCTOR DE LA BASE
@@ -13,6 +17,11 @@ public class ClientePremium extends Cliente{
         super(email, nombre, domicilio, nif);
         this.cuotaAnual = 30.00;
     }
+
+    public ClientePremium() {
+        super();
+    }
+
 
     public double getCuotaAnual() {
         return cuotaAnual;

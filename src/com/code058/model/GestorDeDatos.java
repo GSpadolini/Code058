@@ -13,6 +13,7 @@ import com.code058.model.dao.ArticuloDAO;
 import com.code058.model.dao.ClienteDAO;
 import com.code058.model.dao.PedidoDAO;
 import com.code058.model.factory.DAOFactory;
+import com.code058.model.factory.JPADAOFactory;
 
 public class GestorDeDatos {
 
@@ -24,10 +25,18 @@ public class GestorDeDatos {
 
     public GestorDeDatos() {
 
-        this.clienteDAO = DAOFactory.getClienteDAO();
-        this.articuloDAO = DAOFactory.getArticuloDAO();
-        this.pedidoDAO = DAOFactory.getPedidoDAO();
-        // Inicialización de las estructuras de datos dinámicas
+        DAOFactory factory = new JPADAOFactory();
+
+        try {
+            // Y ahora obtenemos la instancia JPA de cada DAO
+            this.clienteDAO = factory.getClienteDAO();
+            this.articuloDAO = factory.getArticuloDAO();
+            this.pedidoDAO = factory.getPedidoDAO(); // <-- ¡Aquí se usa JPAPedidoDAO!
+        } catch (Exception e) {
+            System.err.println("ERROR CRÍTICO AL INICIALIZAR LA CAPA DAO: " + e.getMessage());
+            e.printStackTrace();
+        }
+
 
 
 
@@ -132,7 +141,7 @@ public class GestorDeDatos {
     }
 
     public List<Pedido> getPedidosPendientes() throws Exception {
-        return pedidoDAO.obtenerPendientes(null); // Asume que el DAO filtra por NULL si no hay email
+        return pedidoDAO.obtenerPendientes();
     }
 
     public List<Pedido> getPedidosPendientes(String emailCliente) throws Exception {
@@ -140,7 +149,7 @@ public class GestorDeDatos {
     }
 
     public List<Pedido> getPedidosEviados() throws Exception {
-        return pedidoDAO.obtenerEnviados(null);
+        return pedidoDAO.obtenerEnviados();
     }
 
     public List<Pedido> getPedidosEviados(String emailCliente) throws Exception {

@@ -7,19 +7,18 @@ import com.code058.model.Pedido;
 import com.code058.model.dao.PedidoDAO;
 import com.code058.model.dao.ClienteDAO; // Necesario para obtener el cliente
 import com.code058.model.dao.ArticuloDAO; // Necesario para obtener el artículo
-import com.code058.model.dao.mysql.MySQLPedidoDAO;
-import com.code058.model.dao.mysql.MySQLClienteDAO;
-import com.code058.model.dao.mysql.MySQLArticuloDAO;
+//import com.code058.model.dao.mysql.MySQLPedidoDAO;
+//import com.code058.model.dao.mysql.MySQLClienteDAO;
+//import com.code058.model.dao.mysql.MySQLArticuloDAO;
 
 import java.time.LocalDateTime;
 
 public class PedidoDAOTest {
     public static void main(String[] args) {
 
-        PedidoDAO pedidoDAO = new MySQLPedidoDAO();
-        // Necesitas instancias de los DAOs de Cliente y Artículo
-        ClienteDAO clienteDAO = new MySQLClienteDAO();
-        ArticuloDAO articuloDAO = new MySQLArticuloDAO();
+//        PedidoDAO pedidoDAO = new MySQLPedidoDAO();
+//        ClienteDAO clienteDAO = new MySQLClienteDAO();
+//        ArticuloDAO articuloDAO = new MySQLArticuloDAO();
 
         try {
             // --- 1. PREPARACIÓN E INSERCIÓN DE CLAVES FORÁNEAS (NUEVO PASO) ---
@@ -43,8 +42,8 @@ public class PedidoDAOTest {
             // esta línea lanzará una excepción (y es correcto que lo haga si la prueba no maneja la limpieza).
             // Si no quieres que falle, usa datos frescos.
             try {
-                clienteDAO.insertar(clienteDePrueba);
-                articuloDAO.insertar(articuloDePrueba);
+//                clienteDAO.insertar(clienteDePrueba);
+//                articuloDAO.insertar(articuloDePrueba);
             } catch (Exception e) {
                 System.out.println("Advertencia: Cliente/Artículo ya existen. Usando los datos existentes.");
             }
@@ -61,11 +60,9 @@ public class PedidoDAOTest {
             );
 
             System.out.println("--- 3. Insertando Pedido Transaccional ---");
-            pedidoDAO.insertar(nuevoPedido);
-            // ... (resto de la prueba) ...
+//            pedidoDAO.insertar(nuevoPedido);
 
         } catch (Exception e) {
-            // ... (manejo de error) ...
             e.printStackTrace();
         }
     }
