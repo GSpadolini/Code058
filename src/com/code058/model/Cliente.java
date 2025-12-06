@@ -1,18 +1,30 @@
 package com.code058.model;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "cliente")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_cliente",
+        discriminatorType = DiscriminatorType.STRING)
 public abstract class Cliente {
     private String nombre;
     private String domicilio;
     private String nif;
+    @Id
     private String email;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List<Pedido> pedidos;
 
     public Cliente (){};
 
-    public Cliente(String nombre, String domicilio, String nif, String email) {
+    public Cliente(String email, String nombre, String domicilio, String nif) {
+        this.email = email; // PK
         this.nombre = nombre;
         this.domicilio = domicilio;
         this.nif = nif;
-        this.email = email;
     }
 
     public String getNombre() {

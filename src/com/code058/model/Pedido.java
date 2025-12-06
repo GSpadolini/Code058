@@ -1,29 +1,48 @@
 package com.code058.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "pedido")
 public class Pedido {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "numero_pedido")
+    private Integer numeroPedido;
+    @ManyToOne
+    @JoinColumn(name = "cliente_email")
     private Cliente cliente;
+    @ManyToOne
+    @JoinColumn(name = "articulo_codigo")
     private Articulo articulo;
-
-    private int numeroPedido;
-    private int cantidad;
+    @Column(name = "unidades")
+    private Integer cantidad;
+    @Column(name = "fecha_hora")
     private LocalDateTime fechaPedido;
-    private double gastoEnvio;
-    private int tiempoPreparacion;
+    @Column(name = "gasto_envio")
+    private Double gastoEnvio;
+    @Column(name = "tiempo_preparacion_min")
+    private Integer tiempoPreparacion;
 
 
     public Pedido(){};
 
-    public Pedido(Cliente cliente, Articulo articulo, int numeroPedido, int cantidad, LocalDateTime fechaPedido, double gastoEnvio, int tiempoPreparacion) {
+    public Pedido(Cliente cliente, Articulo articulo, Integer cantidad, LocalDateTime fechaPedido, Double gastoEnvio, Integer tiempoPreparacion) {
         this.cliente=cliente;
         this.articulo = articulo;
-        this.numeroPedido = numeroPedido;
         this.cantidad = cantidad;
         this.fechaPedido = fechaPedido;
         this.gastoEnvio = gastoEnvio;
         this.tiempoPreparacion = tiempoPreparacion;
+    }
+
+    public Pedido(Cliente cliente, Articulo articulo, Integer numeroPedido, Integer cantidad, LocalDateTime fechaPedido, Double gastoEnvio, Integer tiempoPreparacion) {
+        this(cliente, articulo, cantidad, fechaPedido, gastoEnvio, tiempoPreparacion);
+        this.numeroPedido = numeroPedido;
     }
 
     public Cliente getCliente() {
@@ -111,4 +130,6 @@ public class Pedido {
         }
         return cancelado;
     }
+
+
 }

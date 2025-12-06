@@ -1,11 +1,20 @@
 package com.code058.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "articulo")
 public class Articulo {
+    @Id
     private String codigo;
     private String descripcion;
-    private double precioVenta;
-    private double gastoEnvio;
-    private int tiempoPreparacionMin;
+    @Column (name = "precio_venta")
+    private Double precioVenta;//Se aconseja usar BigDecimal para precios en aplicaciones reales pero como ya usamos double, lo dejaremos asi, para no
+    //cambiar el codigo. Porque eso da pie a que se nos escape algo.
+    @Column (name = "gastos_envio")
+    private Double gastoEnvio;
+    @Column (name = "tiempo_preparacion_min")
+    private Integer tiempoPreparacionMin;
 
     public Articulo() {}
 
