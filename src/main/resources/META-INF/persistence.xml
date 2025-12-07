@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="miPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Entidades: puedes listar o usar scanning automÃ¡tico -->
+        <class>com.code058.model.Articulo</class>
+        <class>com.code058.model.Cliente</class>
+        <class>com.code058.model.ClienteEstandar</class>
+        <class>com.code058.model.ClientePremium</class>
+        <class>com.code058.model.Pedido</class>
+
+        <properties>
+            <!-- ConexiÃ³n -->
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/online_store_db?serverTimezone=Europe/Madrid"/>
+            <property name="jakarta.persistence.jdbc.user" value="root"/>
+            <property name="jakarta.persistence.jdbc.password" value="C4mbiami!"/>
+            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+
+            <!-- Dialecto Hibernate -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
+
+            <!-- Mostrar SQL en consola (Ãºtil para debugging) -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- Opcional: hbm2ddl (validate/update/create) -->
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+        </properties>
+    </persistence-unit>
+</persistence>
+
+
