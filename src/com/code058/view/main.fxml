@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.code058.controller.MainFXController">
+    <children>
+        <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <tabs>
+                <Tab text="Artículos">
+                    <content>
+                        <VBox spacing="10.0" style="-fx-padding: 15;">
+                            <children>
+                                <TitledPane collapsible="false" text="Nuevo Artículo">
+                                    <content>
+                                        <VBox spacing="10.0">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <TextField fx:id="txtArtCodigo" prefWidth="150.0" promptText="Código (ej: A001)" />
+                                                        <TextField fx:id="txtArtDescripcion" promptText="Descripción del artículo" HBox.hgrow="ALWAYS" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <TextField fx:id="txtArtPrecio" prefWidth="100.0" promptText="Precio (€)" />
+                                                        <TextField fx:id="txtArtGastos" prefWidth="100.0" promptText="Envío (€)" />
+                                                        <TextField fx:id="txtArtTiempo" prefWidth="100.0" promptText="Tiempo (min)" />
+                                                        <Region HBox.hgrow="ALWAYS" />
+                                                        <Button onAction="#accionAnadirArticulo" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Añadir Artículo" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </TitledPane>
+
+                                <Separator />
+
+                                <HBox alignment="CENTER_RIGHT">
+                                    <Button onAction="#cargarArticulos" text="⟳ Recargar Tabla" />
+                                </HBox>
+
+                                <TableView fx:id="tablaArticulos" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="colCodigo" prefWidth="100.0" text="Código" />
+                                        <TableColumn fx:id="colDescripcion" prefWidth="300.0" text="Descripción" />
+                                        <TableColumn fx:id="colPrecio" prefWidth="100.0" text="Precio" />
+                                        <TableColumn fx:id="colGastos" prefWidth="100.0" text="Gastos Envío" />
+                                        <TableColumn fx:id="colTiempo" prefWidth="100.0" text="Tiempo (min)" />
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </VBox>
+                    </content>
+                </Tab>
+
+                <Tab text="Clientes">
+                    <content>
+                        <VBox spacing="10.0" style="-fx-padding: 15;">
+                            <children>
+                                <TitledPane collapsible="false" text="Nuevo Cliente">
+                                    <content>
+                                        <VBox spacing="10.0">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <TextField fx:id="txtCliEmail" prefWidth="200.0" promptText="Email (identificador)" />
+                                                        <TextField fx:id="txtCliNombre" promptText="Nombre completo" HBox.hgrow="ALWAYS" />
+                                                        <TextField fx:id="txtCliNif" prefWidth="120.0" promptText="NIF" />
+                                                    </children>
+                                                </HBox>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <TextField fx:id="txtCliDomicilio" promptText="Domicilio completo" HBox.hgrow="ALWAYS" />
+                                                        <javafx.scene.control.ComboBox fx:id="comboTipoCliente" prefWidth="150.0" promptText="Tipo Cliente" />
+                                                        <Button onAction="#accionAnadirCliente" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;" text="Guardar Cliente" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </TitledPane>
+
+                                <Separator />
+
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <javafx.scene.control.Label style="-fx-font-weight: bold;" text="Filtrar por:" />
+                                        <Button onAction="#cargarClientesTodos" text="Todos" />
+                                        <Button onAction="#cargarClientesEstandar" text="Sólo Estándar" />
+                                        <Button onAction="#cargarClientesPremium" text="Sólo Premium" />
+                                    </children>
+                                </HBox>
+
+                                <TableView fx:id="tablaClientes" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="colCliEmail" prefWidth="150.0" text="Email" />
+                                        <TableColumn fx:id="colCliNombre" prefWidth="200.0" text="Nombre" />
+                                        <TableColumn fx:id="colCliNif" prefWidth="100.0" text="NIF" />
+                                        <TableColumn fx:id="colCliDomicilio" prefWidth="250.0" text="Domicilio" />
+                                        <TableColumn fx:id="colCliTipo" prefWidth="100.0" text="Tipo" />
+                                        <TableColumn fx:id="colCliCuota" prefWidth="80.0" text="Cuota (€)" />
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </VBox>
+                    </content>
+                </Tab>
+
+                <Tab text="Pedidos">
+                    <content>
+                        <VBox spacing="10.0" style="-fx-padding: 15;">
+                            <children>
+                                <TitledPane collapsible="false" text="Nuevo Pedido">
+                                    <content>
+                                        <VBox spacing="10.0">
+                                            <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                    <children>
+                                                        <javafx.scene.control.ComboBox fx:id="comboPedCliente" prefWidth="250.0" promptText="Seleccionar Cliente..." />
+
+                                                        <javafx.scene.control.ComboBox fx:id="comboPedArticulo" prefWidth="250.0" promptText="Seleccionar Artículo..." />
+
+                                                        <javafx.scene.control.Label text="Unidades:" />
+                                                        <TextField fx:id="txtPedUnidades" prefWidth="60.0" text="1" />
+
+                                                        <Button onAction="#accionAnadirPedido" style="-fx-background-color: #E91E63; -fx-text-fill: white; -fx-font-weight: bold;" text="Crear Pedido" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </TitledPane>
+
+                                <Separator />
+
+                                <HBox alignment="CENTER_LEFT" spacing="15.0" style="-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-background-radius: 5;">
+                                    <children>
+                                        <javafx.scene.control.Label style="-fx-font-weight: bold;" text="Ver:" />
+
+                                        <javafx.scene.control.RadioButton fx:id="radioPendientes" selected="true" text="Pendientes de Envío" onAction="#cargarPedidos">
+                                            <toggleGroup>
+                                                <javafx.scene.control.ToggleGroup fx:id="grupoFiltro" />
+                                            </toggleGroup>
+                                        </javafx.scene.control.RadioButton>
+
+                                        <javafx.scene.control.RadioButton fx:id="radioEnviados" text="Enviados (Histórico)" toggleGroup="$grupoFiltro" onAction="#cargarPedidos" />
+
+                                        <Separator orientation="VERTICAL" />
+
+                                        <javafx.scene.control.Label text="Filtrar por Email Cliente:" />
+                                        <TextField fx:id="txtFiltroEmail" promptText="Escribe email..." />
+                                        <Button onAction="#cargarPedidos" text="🔍 Buscar" />
+
+                                        <Region HBox.hgrow="ALWAYS" />
+
+                                        <Button onAction="#accionEliminarPedido" style="-fx-border-color: red; -fx-text-fill: red;" text="🗑 Eliminar Seleccionado" />
+                                    </children>
+                                </HBox>
+
+                                <TableView fx:id="tablaPedidos" VBox.vgrow="ALWAYS">
+                                    <columns>
+                                        <TableColumn fx:id="colPedId" prefWidth="50.0" text="Nº" />
+                                        <TableColumn fx:id="colPedFecha" prefWidth="150.0" text="Fecha" />
+                                        <TableColumn fx:id="colPedCliente" prefWidth="200.0" text="Cliente" />
+                                        <TableColumn fx:id="colPedArticulo" prefWidth="100.0" text="Artículo" />
+                                        <TableColumn fx:id="colPedUnidades" prefWidth="70.0" text="Und." />
+                                        <TableColumn fx:id="colPedTotal" prefWidth="100.0" text="Total (€)" />
+                                        <TableColumn fx:id="colPedEstado" prefWidth="120.0" text="Estado" />
+                                        <TableColumn fx:id="colPedTiempoPre" prefWidth="120.0" text="Tiempo de preparacion(min)" />
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </VBox>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
+</VBox>
